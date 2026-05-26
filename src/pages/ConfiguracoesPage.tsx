@@ -3,7 +3,7 @@ import { useStore } from '../store'
 import Modal, { ModalHeader } from '../components/ui/Modal'
 
 export default function ConfiguracoesPage() {
-  const { data, updateUser, restoreDefaults, showToast } = useStore()
+  const { data, updateUser, toggleTheme, restoreDefaults, showToast } = useStore()
   const { user } = data
 
   const [showConfirm, setShowConfirm] = useState(false)
@@ -13,6 +13,11 @@ export default function ConfiguracoesPage() {
     e.preventDefault()
     updateUser(form)
     showToast('Perfil atualizado com sucesso!', 'success')
+  }
+
+  function handleToggleTheme() {
+    toggleTheme()
+    showToast(`Tema alterado para ${data.user.theme === 'dark' ? 'claro' : 'escuro'}!`, 'success')
   }
 
   function handleRestore() {
@@ -80,18 +85,23 @@ export default function ConfiguracoesPage() {
               <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50 dark:bg-kitanda-darkCard/50">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
-                    <i className="bi bi-sun-fill text-amber-600 dark:text-amber-400 text-lg" />
+                    <i className={`bi ${data.user.theme === 'dark' ? 'bi-moon-fill' : 'bi-sun-fill'} text-amber-600 dark:text-amber-400 text-lg`} />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-gray-900 dark:text-kitanda-darkText">Tema claro</p>
+                    <p className="text-sm font-semibold text-gray-900 dark:text-kitanda-darkText">
+                      Tema {data.user.theme === 'dark' ? 'Escuro' : 'Claro'}
+                    </p>
                     <p className="text-xs text-kitanda-muted dark:text-kitanda-darkTextMuted">
-                      A interface usa uma base clara para melhor leitura.
+                      {data.user.theme === 'dark' ? 'A interface usa uma base escura para reduzir a fadiga visual.' : 'A interface usa uma base clara para melhor leitura.'}
                     </p>
                   </div>
                 </div>
-                <span className="px-3 py-1.5 rounded-lg bg-emerald-100 text-emerald-700 text-xs font-semibold">
-                  Ativo
-                </span>
+                <button
+                  onClick={handleToggleTheme}
+                  className="px-4 py-2 rounded-xl bg-emerald-500 text-white text-xs font-medium hover:bg-emerald-600 transition-colors"
+                >
+                  Alternar
+                </button>
               </div>
 
               <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50 dark:bg-kitanda-darkCard/50">

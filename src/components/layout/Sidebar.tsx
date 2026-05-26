@@ -5,7 +5,7 @@ import AppLogo from '../ui/AppLogo'
 interface SidebarProps {
   collapsed: boolean
   activeModule: string
-  onNavigate: (module: string) => void
+  onNavigate: (module: string, action?: string) => void
   onToggle: () => void
   mobileOpen: boolean
   onMobileClose: () => void
@@ -18,7 +18,10 @@ const navItems = [
   { module: 'pagamentos', label: 'Finanças', icon: 'bi-wallet2' },
 ]
 
-const alunoItems = ['Confirmação', 'Matrícula', 'Inscrição']
+const alunoItems = [
+  { label: 'Inscrição', action: 'inscricao' },
+  { label: 'Matrículas', action: 'matriculas' },
+]
 
 export default function Sidebar({
   collapsed,
@@ -31,8 +34,8 @@ export default function Sidebar({
   const { data } = useStore()
   const [showAlunosSubmenu, setShowAlunosSubmenu] = useState(activeModule === 'alunos')
 
-  const handleNavigate = (module: string) => {
-    onNavigate(module)
+  const handleNavigate = (module: string, action?: string) => {
+    onNavigate(module, action)
     onMobileClose()
   }
 
@@ -75,7 +78,7 @@ export default function Sidebar({
                   onClick={() => {
                     if (isAlunos) {
                       setShowAlunosSubmenu((open) => !open)
-                      handleNavigate(item.module)
+                      handleNavigate(item.module, 'inscricao')
                     } else {
                       handleNavigate(item.module)
                     }
@@ -99,13 +102,15 @@ export default function Sidebar({
 
                 {!collapsed && isAlunos && showAlunosSubmenu && (
                   <div className="ml-10 mt-2 space-y-1">
-                    {alunoItems.map((label) => (
+                    {alunoItems.map((item, index) => (
                       <button
-                        key={label}
-                        className="w-full px-3 py-2 text-left text-xs font-medium text-[#697397] transition-colors hover:text-kitanda-emerald"
+                        key={item.label}
+                        onClick={() => handleNavigate('alunos', item.action)}
+                        className="w-full px-3 py-2 text-left text-xs font-medium text-[#697397] transition-all duration-200 hover:translate-x-1 hover:text-kitanda-emerald"
+                        style={{ transitionDelay: `${index * 35}ms` }}
                         type="button"
                       >
-                        {label}
+                        {item.label}
                       </button>
                     ))}
                   </div>

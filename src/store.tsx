@@ -1,5 +1,22 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react'
-import type { AppData, User, Student, Teacher, Task, Grade, CalendarEvent, Payment, Announcement } from './types'
+import type {
+  AppData,
+  User,
+  Student,
+  Teacher,
+  Task,
+  Grade,
+  CalendarEvent,
+  Payment,
+  Announcement,
+  EnrollmentApplication,
+  EnrollmentConfirmation,
+  Course,
+  Class,
+  TuitionPlan,
+  ApplicationStatus,
+  InscriptionRequest,
+} from './types'
 
 const STORE_KEY = 'kitanda_escolar_store'
 const AUTH_KEY = 'kitanda_escolar_auth'
@@ -13,6 +30,11 @@ const initialData: AppData = {
     theme: 'light',
   },
   students: [],
+  inscriptions: [],
+  enrollmentApplications: [],
+  enrollmentConfirmations: [],
+  courses: [],
+  tuitionPlans: [],
   teachers: [],
   classes: [],
   tasks: [],
@@ -36,6 +58,14 @@ interface StoreContextValue {
   updateUser: (user: Partial<User>) => void
   addStudent: (student: Student) => void
   removeStudent: (id: string) => void
+  addInscription: (inscription: Omit<InscriptionRequest, 'status'>) => void
+  approveInscription: (id: string) => void
+  addEnrollmentApplication: (application: EnrollmentApplication) => void
+  addEnrollmentConfirmation: (confirmation: EnrollmentConfirmation) => void
+  updateConfirmationStatus: (id: string, status: ApplicationStatus, rejectionReason?: string) => void
+  addCourse: (course: Course) => void
+  addClass: (schoolClass: Class) => void
+  addTuitionPlan: (plan: TuitionPlan) => void
   addTeacher: (teacher: Teacher) => void
   removeTeacher: (id: string) => void
   addTask: (task: Task) => void
@@ -49,6 +79,7 @@ interface StoreContextValue {
   addAnnouncement: (announcement: Announcement) => void
   markAnnouncementRead: (id: string) => void
   removeAnnouncement: (id: string) => void
+  toggleTheme: () => void
   restoreDefaults: () => void
   toasts: Toast[]
   showToast: (message: string, type: Toast['type']) => void
@@ -61,7 +92,24 @@ function loadFromStorage(): AppData {
     const stored = localStorage.getItem(STORE_KEY)
     if (stored) {
       const parsed = JSON.parse(stored) as AppData
-      return { ...parsed, user: { ...parsed.user, theme: 'light' } }
+      return {
+        ...initialData,
+        ...parsed,
+        user: { ...initialData.user, ...parsed.user },
+        students: parsed.students ?? [],
+        inscriptions: parsed.inscriptions ?? [],
+        enrollmentApplications: parsed.enrollmentApplications ?? [],
+        enrollmentConfirmations: parsed.enrollmentConfirmations ?? [],
+        courses: parsed.courses ?? [],
+        tuitionPlans: parsed.tuitionPlans ?? [],
+        teachers: parsed.teachers ?? [],
+        classes: parsed.classes ?? [],
+        tasks: parsed.tasks ?? [],
+        calendarEvents: parsed.calendarEvents ?? [],
+        grades: parsed.grades ?? [],
+        payments: parsed.payments ?? [],
+        announcements: parsed.announcements ?? [],
+      }
     }
   } catch {
     /* ignore */
@@ -115,8 +163,12 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   }, [loggedIn])
 
   useEffect(() => {
-    document.documentElement.classList.remove('dark')
-  }, [])
+    if (data.user.theme === 'dark') {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
+  }, [data.user.theme])
 
   const showToast = useCallback((message: string, type: Toast['type']) => {
     const id = Date.now().toString()
@@ -127,7 +179,17 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const updateUser = useCallback((partial: Partial<User>) => {
-    setData(prev => ({ ...prev, user: { ...prev.user, ...partial, theme: 'light' } }))
+    setData(prev => ({ ...prev, user: { ...prev.user, ...partial } }))
+  }, [])
+
+  const toggleTheme = useCallback(() => {
+    setData(prev => ({
+      ...prev,
+      user: {
+        ...prev.user,
+        theme: prev.user.theme === 'dark' ? 'light' : 'dark',
+      },
+    }))
   }, [])
 
   const logout = useCallback(() => {
@@ -145,6 +207,48 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       students: prev.students.filter(s => s.id !== id),
       grades: prev.grades.filter(g => g.studentId !== id),
     }))
+  }, [])
+
+  const addInscription = useCallback((inscription: Omit<InscriptionRequest, 'status'>) => {
+    setData(prev => ({ ...prev, inscriptions: [...prev.inscriptions, { ...inscription, status: 'PENDENTE' }] }))
+  }, [])
+
+  const approveInscription = useCallback((id: string) => {
+    setData(prev => ({
+      ...prev,
+      inscriptions: prev.inscriptions.map(i => (i.id === id ? { ...i, status: 'APROVADA' } : i)),
+    }))
+  }, [])
+
+  const addEnrollmentApplication = useCallback((application: EnrollmentApplication) => {
+    setData(prev => ({ ...prev, enrollmentApplications: [...prev.enrollmentApplications, application] }))
+  }, [])
+
+
+
+  const addEnrollmentConfirmation = useCallback((confirmation: EnrollmentConfirmation) => {
+    setData(prev => ({ ...prev, enrollmentConfirmations: [...prev.enrollmentConfirmations, confirmation] }))
+  }, [])
+
+  const updateConfirmationStatus = useCallback((id: string, status: ApplicationStatus, rejectionReason?: string) => {
+    setData(prev => ({
+      ...prev,
+      enrollmentConfirmations: prev.enrollmentConfirmations.map(c =>
+        c.id === id ? { ...c, status, rejectionReason } : c
+      ),
+    }))
+  }, [])
+
+  const addCourse = useCallback((course: Course) => {
+    setData(prev => ({ ...prev, courses: [...prev.courses, course] }))
+  }, [])
+
+  const addClass = useCallback((schoolClass: Class) => {
+    setData(prev => ({ ...prev, classes: [...prev.classes, schoolClass] }))
+  }, [])
+
+  const addTuitionPlan = useCallback((plan: TuitionPlan) => {
+    setData(prev => ({ ...prev, tuitionPlans: [...prev.tuitionPlans, plan] }))
   }, [])
 
   const addTeacher = useCallback((teacher: Teacher) => {
@@ -235,8 +339,17 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         setLoggedIn,
         logout,
         updateUser,
+        toggleTheme,
         addStudent,
         removeStudent,
+        addInscription,
+        approveInscription,
+        addEnrollmentApplication,
+        addEnrollmentConfirmation,
+        updateConfirmationStatus,
+        addCourse,
+        addClass,
+        addTuitionPlan,
         addTeacher,
         removeTeacher,
         addTask,

@@ -31,8 +31,8 @@ export default function AppLayout({
   const [mobileOpen, setMobileOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
 
-  function handleNavigate(mod: string) {
-    onNavigate(mod)
+  function handleNavigate(mod: string, action?: string) {
+    onNavigate(mod, action)
     setMobileOpen(false)
   }
 

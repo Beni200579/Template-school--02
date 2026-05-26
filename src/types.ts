@@ -8,6 +8,7 @@ export interface User {
 
 export interface Student {
   id: string
+  studentNumber?: string
   name: string
   class: string
   email: string
@@ -16,6 +17,135 @@ export interface Student {
   attendance: string
   parent: string
   phone: string
+  bi?: string
+  birthDate?: string
+  course?: string
+  shift?: string
+}
+
+export type InscriptionStatus = 'PENDENTE' | 'EM_ANALISE' | 'APROVADA' | 'REJEITADA'
+
+// Campo status removido da InscriptionRequest (remanejado para a lógica interna)
+export interface InscriptionRequest {
+  id: string
+  fullName: string
+  phone: string
+  email: string
+  birthDate: string
+  gender: string
+  courseInterest: string
+  academicLevel: string
+  address: string
+  identityDocument: string
+  registrationDate: string
+  status: InscriptionStatus
+}
+
+export type ApplicationStatus = 'Pendente' | 'Em Análise' | 'Aprovada' | 'Rejeitada'
+
+export type EnrollmentStatus = 
+  | 'PENDENTE' 
+  | 'AGUARDANDO_PAGAMENTO' 
+  | 'DOCUMENTACAO_INCOMPLETA' 
+  | 'MATRICULADO' 
+  | 'ATIVO' 
+  | 'SUSPENSO' 
+  | 'CANCELADO'
+
+export interface DocumentSet {
+  identityType: 'BI' | 'PASSAPORTE'
+  identityNumber: string
+  issueDate: string
+  issuePlace: string
+  nif?: string
+  certificate: boolean
+  residenceProof: boolean
+  declaration: boolean
+  attachments: string[]
+}
+
+export interface StudentDocumentSet {
+  bi: string
+  certificate: string
+  residenceProof: string
+  photos: string[]
+}
+
+export interface EnrollmentApplication {
+  id: string
+  fullName: string
+  photo: string
+  birthDate: string
+  gender: string
+  nationality: string
+  maritalStatus: string
+  birthPlace: string
+  phone: string
+  altPhone?: string
+  email: string
+  address: string
+
+  documents: DocumentSet
+
+  studentNumber?: string
+  course: string
+  classYear: string
+  shift: string
+  turma?: string
+  campus: string
+  academicYear: string
+  status: EnrollmentStatus
+
+  financial: {
+    matriculaValue: number
+    propinaValue: number
+    discount: number
+    paymentMethod: string
+    paymentProof: string
+    status: 'PENDENTE' | 'PAGO'
+  }
+
+  guardian: {
+    name: string
+    relation: string
+    phone: string
+    email: string
+  }
+
+  createdAt: string
+  updatedAt: string
+}
+
+export interface EnrollmentConfirmation {
+  id: string
+  studentNumber: string
+  status: ApplicationStatus
+  submittedAt: string
+  fullName: string
+  bi: string
+  birthDate: string
+  course: string
+  classYear: string
+  shift: string
+  phone: string
+  email: string
+  documents: StudentDocumentSet
+  rejectionReason?: string
+}
+
+export interface Course {
+  id: string
+  name: string
+  code: string
+  duration: string
+}
+
+export interface TuitionPlan {
+  id: string
+  course: string
+  classYear: string
+  amount: string
+  dueDay: string
 }
 
 export interface Teacher {
@@ -85,6 +215,11 @@ export interface Announcement {
 export interface AppData {
   user: User
   students: Student[]
+  inscriptions: InscriptionRequest[]
+  enrollmentApplications: EnrollmentApplication[]
+  enrollmentConfirmations: EnrollmentConfirmation[]
+  courses: Course[]
+  tuitionPlans: TuitionPlan[]
   teachers: Teacher[]
   classes: Class[]
   tasks: Task[]

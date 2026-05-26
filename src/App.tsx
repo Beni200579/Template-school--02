@@ -13,6 +13,7 @@ import CalendarioPage from './pages/CalendarioPage'
 import PagamentosPage from './pages/PagamentosPage'
 import ComunicadosPage from './pages/ComunicadosPage'
 import ConfiguracoesPage from './pages/ConfiguracoesPage'
+import ServicosPage from './pages/ServicosPage'
 
 function AppContent() {
   const { loggedIn } = useStore()
@@ -33,7 +34,7 @@ function AppContent() {
       case 'dashboard':
         return <DashboardPage />
       case 'alunos':
-        return <AlunosPage />
+        return <AlunosPage action={action} />
       case 'professores':
         return <ProfessoresPage action={action} />
       case 'turmas':
@@ -45,7 +46,7 @@ function AppContent() {
       case 'calendario':
         return <CalendarioPage />
       case 'servicos':
-        return <div className="text-kitanda-darkText">Página de Serviços</div>
+        return <ServicosPage />
       case 'pagamentos':
         return <PagamentosPage />
       case 'comunicados':

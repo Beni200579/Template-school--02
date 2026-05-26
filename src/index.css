@@ -58,6 +58,26 @@
     animation: fadeInUp 0.4s ease-out forwards;
   }
 
+  .page-swap {
+    animation: pageSwap 0.28s ease-out both;
+  }
+
+  .stagger-in > * {
+    animation: fadeInUp 0.32s ease-out both;
+  }
+
+  .stagger-in > *:nth-child(2) {
+    animation-delay: 0.04s;
+  }
+
+  .stagger-in > *:nth-child(3) {
+    animation-delay: 0.08s;
+  }
+
+  .stagger-in > *:nth-child(4) {
+    animation-delay: 0.12s;
+  }
+
   @keyframes fadeInUp {
     from {
       opacity: 0;
@@ -66,6 +86,17 @@
     to {
       opacity: 1;
       transform: translateY(0);
+    }
+  }
+
+  @keyframes pageSwap {
+    from {
+      opacity: 0;
+      transform: translateY(10px) scale(0.99);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
     }
   }
 

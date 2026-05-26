@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useStore } from '../../store'
+import NotificationButton from '../ui/NotificationButton'
 
 interface HeaderProps {
   onMenuToggle: () => void
@@ -10,7 +11,7 @@ interface HeaderProps {
 
 const quickActionMap: Record<string, string> = {
   dashboard: 'tarefas',
-  alunos: 'alunos/matricular',
+  alunos: 'alunos',
   professores: 'professores/novo',
   turmas: 'turmas/nova',
   notas: 'notas/lancar',
@@ -93,19 +94,10 @@ export default function Header({
           <i className="bi bi-plus-lg text-xl" />
         </button>
 
-        <button
+        <NotificationButton
           onClick={() => onNavigate('comunicados')}
-          className="relative flex h-10 w-10 items-center justify-center rounded-xl text-kitanda-muted transition-colors hover:bg-slate-100"
-          title="Notificações"
-          type="button"
-        >
-          <i className="bi bi-bell-fill text-lg" />
-          {unreadCount > 0 && (
-            <span className="absolute right-1 top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-kitanda-red px-1 text-[10px] font-bold text-white">
-              {unreadCount}
-            </span>
-          )}
-        </button>
+          hasUnread={unreadCount > 0}
+        />
 
         <div ref={menuRef} className="relative">
           <button
