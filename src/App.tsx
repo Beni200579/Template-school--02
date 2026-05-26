@@ -1,0 +1,55 @@
+import { useState } from 'react';
+import { StoreProvider, useStore } from './store';
+import AppLayout from './components/layout/AppLayout';
+
+import LoginPage from './pages/LoginPage';
+import DashboardPage from './pages/DashboardPage';
+import AlunosPage from './pages/AlunosPage';
+import ProfessoresPage from './pages/ProfessoresPage';
+import TurmasPage from './pages/TurmasPage';
+import NotasPage from './pages/NotasPage';
+import TarefasPage from './pages/TarefasPage';
+import CalendarioPage from './pages/CalendarioPage';
+import PagamentosPage from './pages/PagamentosPage';
+import ComunicadosPage from './pages/ComunicadosPage';
+import ConfiguracoesPage from './pages/ConfiguracoesPage';
+
+function AppContent() {
+  const { loggedIn } = useStore();
+  const [module, setModule] = useState('dashboard');
+  const [action, setAction] = useState<string | undefined>();
+
+  const handleNavigate = (mod: string, act?: string) => {
+    setModule(mod);
+    setAction(act);
+  };
+
+  if (!loggedIn) {
+    return <LoginPage />;
+  }
+
+  const renderPage = () => {
+    switch (module) {
+      case 'dashboard': return <DashboardPage />;
+      case 'alunos': return <AlunosPage action={action} />;
+      case 'servicos': return <div>Página de Serviços</div>;
+      case 'pagamentos': return <PagamentosPage />;
+      case 'configuracoes': return <ConfiguracoesPage />;
+      default: return <DashboardPage />;
+    }
+  };
+
+  return (
+    <AppLayout module={module} onNavigate={handleNavigate}>
+      {renderPage()}
+    </AppLayout>
+  );
+}
+
+export default function App() {
+  return (
+    <StoreProvider>
+      <AppContent />
+    </StoreProvider>
+  );
+}

@@ -1,0 +1,44 @@
+import type { ReactNode } from 'react'
+
+interface ModalProps {
+  open: boolean
+  onClose: () => void
+  children: ReactNode
+}
+
+export default function Modal({ open, onClose, children }: ModalProps) {
+  if (!open) return null
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <div
+        className="w-full max-w-lg bg-white dark:bg-gray-900 rounded-[18px] shadow-xl overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {children}
+      </div>
+    </div>
+  )
+}
+
+interface ModalHeaderProps {
+  title: string
+  onClose: () => void
+}
+
+export function ModalHeader({ title, onClose }: ModalHeaderProps) {
+  return (
+    <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{title}</h3>
+      <button
+        onClick={onClose}
+        className="p-1 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:text-gray-300 dark:hover:bg-gray-800 transition-colors"
+      >
+        <i className="bi bi-x-lg text-lg" />
+      </button>
+    </div>
+  )
+}
