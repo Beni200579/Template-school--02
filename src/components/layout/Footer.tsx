@@ -6,8 +6,8 @@ export default function Footer() {
   const year = new Date().getFullYear()
 
   return (
-    <footer className="hidden md:block px-6 py-4 border-t border-kitanda-border dark:border-kitanda-darkBorder">
-      <p className="text-center text-xs text-kitanda-muted dark:text-kitanda-darkTextMuted">
+    <footer className="hidden border-t border-kitanda-border px-6 py-4 md:block">
+      <p className="text-center text-xs text-kitanda-muted">
         &copy; {year} {data.user.schoolName}. Todos os direitos reservados.
       </p>
     </footer>

@@ -61,23 +61,24 @@ export default function Header({
   }
 
   return (
-    <header className="sticky top-0 z-30 bg-white border-b border-kitanda-border px-4 md:px-6 h-16 flex items-center gap-3 shrink-0 shadow-sm shadow-slate-200/60">
+    <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-3 border-b border-kitanda-border bg-white px-4 shadow-sm shadow-slate-200/60 md:px-6">
       <button
         onClick={onMenuToggle}
-        className="md:hidden p-2 rounded-lg text-kitanda-muted hover:bg-slate-100 transition-colors"
+        className="rounded-lg p-2 text-kitanda-muted transition-colors hover:bg-slate-100 md:hidden"
         title="Abrir menu"
+        type="button"
       >
         <i className="bi bi-list text-xl" />
       </button>
 
       <button
         onClick={onSearchOpen}
-        className="hidden sm:flex items-center gap-2 flex-1 max-w-md h-10 px-4 rounded-xl bg-slate-100 text-kitanda-muted cursor-pointer transition-colors hover:bg-slate-200 text-left"
+        className="hidden h-10 max-w-md flex-1 cursor-pointer items-center gap-2 rounded-xl bg-slate-100 px-4 text-left text-kitanda-muted transition-colors hover:bg-slate-200 sm:flex"
         type="button"
       >
         <i className="bi bi-search" />
         <span className="text-sm">Pesquisar...</span>
-        <span className="ml-auto text-xs px-1.5 py-0.5 rounded border border-kitanda-border bg-white text-kitanda-muted">
+        <span className="ml-auto rounded border border-kitanda-border bg-white px-1.5 py-0.5 text-xs text-kitanda-muted">
           Ctrl+K
         </span>
       </button>
@@ -85,7 +86,7 @@ export default function Header({
       <div className="ml-auto flex items-center gap-2">
         <button
           onClick={handleQuickAction}
-          className="w-10 h-10 rounded-xl text-kitanda-emerald hover:bg-emerald-50 transition-colors flex items-center justify-center"
+          className="flex h-10 w-10 items-center justify-center rounded-xl text-kitanda-emerald transition-colors hover:bg-emerald-50"
           title="Ação rápida"
           type="button"
         >
@@ -94,13 +95,13 @@ export default function Header({
 
         <button
           onClick={() => onNavigate('comunicados')}
-          className="relative w-10 h-10 rounded-xl text-kitanda-muted hover:bg-slate-100 transition-colors flex items-center justify-center"
+          className="relative flex h-10 w-10 items-center justify-center rounded-xl text-kitanda-muted transition-colors hover:bg-slate-100"
           title="Notificações"
           type="button"
         >
           <i className="bi bi-bell-fill text-lg" />
           {unreadCount > 0 && (
-            <span className="absolute top-1 right-1 min-w-5 h-5 px-1 rounded-full bg-kitanda-red text-white text-[10px] font-bold flex items-center justify-center">
+            <span className="absolute right-1 top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-kitanda-red px-1 text-[10px] font-bold text-white">
               {unreadCount}
             </span>
           )}
@@ -109,38 +110,34 @@ export default function Header({
         <div ref={menuRef} className="relative">
           <button
             onClick={() => setUserMenuOpen((open) => !open)}
-            className="flex items-center gap-2 pl-2 pr-2 py-1.5 rounded-xl hover:bg-slate-100 transition-colors"
+            className="flex items-center gap-2 rounded-xl py-1.5 pl-2 pr-2 transition-colors hover:bg-slate-100"
             type="button"
             aria-expanded={userMenuOpen}
             aria-haspopup="menu"
           >
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 text-xs font-bold text-white">
               {data.user.name.charAt(0).toUpperCase()}
             </div>
-            <div className="hidden sm:block text-sm leading-tight text-left">
-              <p className="font-semibold text-kitanda-deep">
-                {data.user.name}
-              </p>
-              <p className="text-xs text-kitanda-muted">
-                {data.user.role}
-              </p>
+            <div className="hidden text-left text-sm leading-tight sm:block">
+              <p className="font-semibold text-kitanda-deep">{data.user.name}</p>
+              <p className="text-xs text-kitanda-muted">{data.user.role}</p>
             </div>
             <i className={`bi bi-chevron-down text-xs text-kitanda-muted transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} />
           </button>
 
           {userMenuOpen && (
             <div
-              className="absolute right-0 top-12 w-64 rounded-18 border border-kitanda-border bg-white shadow-xl shadow-slate-200/70 overflow-hidden"
+              className="absolute right-0 top-12 w-64 overflow-hidden rounded-18 border border-kitanda-border bg-white shadow-xl shadow-slate-200/70"
               role="menu"
             >
-              <div className="px-4 py-3 border-b border-kitanda-border">
+              <div className="border-b border-kitanda-border px-4 py-3">
                 <p className="text-sm font-semibold text-kitanda-deep">{data.user.name}</p>
                 <p className="text-xs text-kitanda-muted">{data.user.schoolName}</p>
               </div>
 
               <button
                 onClick={handleGoToSettings}
-                className="w-full flex items-center gap-3 px-4 py-3 text-sm text-kitanda-text hover:bg-slate-50 transition-colors text-left"
+                className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm text-kitanda-text transition-colors hover:bg-slate-50"
                 type="button"
                 role="menuitem"
               >
@@ -150,7 +147,7 @@ export default function Header({
 
               <button
                 onClick={handleLogout}
-                className="w-full flex items-center gap-3 px-4 py-3 text-sm text-rose-600 hover:bg-rose-50 transition-colors text-left"
+                className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm text-rose-600 transition-colors hover:bg-rose-50"
                 type="button"
                 role="menuitem"
               >

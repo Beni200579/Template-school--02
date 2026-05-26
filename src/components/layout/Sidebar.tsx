@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useStore } from '../../store'
 import AppLogo from '../ui/AppLogo'
 
 interface SidebarProps {
@@ -11,11 +12,13 @@ interface SidebarProps {
 }
 
 const navItems = [
-  { module: 'dashboard', label: 'Painel', icon: 'bi-grid-fill' },
-  { module: 'alunos', label: 'Alunos', icon: 'bi-people-fill' },
-  { module: 'servicos', label: 'Serviços', icon: 'bi-gear-wide-connected' },
-  { module: 'pagamentos', label: 'Pagamentos', icon: 'bi-credit-card-fill' },
+  { module: 'dashboard', label: 'Visão Geral', icon: 'bi-grid' },
+  { module: 'alunos', label: 'Alunos', icon: 'bi-person-plus' },
+  { module: 'servicos', label: 'Serviços', icon: 'bi-briefcase' },
+  { module: 'pagamentos', label: 'Finanças', icon: 'bi-wallet2' },
 ]
+
+const alunoItems = ['Confirmação', 'Matrícula', 'Inscrição']
 
 export default function Sidebar({
   collapsed,
@@ -25,82 +28,134 @@ export default function Sidebar({
   mobileOpen,
   onMobileClose,
 }: SidebarProps) {
-  const [showAlunosSubmenu, setShowAlunosSubmenu] = useState(false)
+  const { data } = useStore()
+  const [showAlunosSubmenu, setShowAlunosSubmenu] = useState(activeModule === 'alunos')
+
+  const handleNavigate = (module: string) => {
+    onNavigate(module)
+    onMobileClose()
+  }
+
+  const itemButtonClass = (active: boolean) =>
+    collapsed
+      ? `relative mx-auto flex h-11 w-11 items-center justify-center rounded-lg text-lg transition-colors ${
+          active
+            ? 'bg-[#101827] text-kitanda-emerald before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:rounded-r before:bg-kitanda-emerald'
+            : 'text-[#6d789d] hover:bg-[#0b1022] hover:text-kitanda-darkText'
+        }`
+      : `relative flex w-full items-center justify-between px-3 py-3 text-sm font-semibold transition-colors ${
+          active
+            ? 'bg-[#101827] text-kitanda-darkText before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:rounded-r before:bg-kitanda-emerald'
+            : 'text-kitanda-darkTextMuted hover:bg-[#0b1022] hover:text-kitanda-darkText'
+        }`
 
   const sidebarContent = (
     <div
-      className={`h-full flex flex-col bg-white dark:bg-kitanda-darkCard border-r border-kitanda-border dark:border-kitanda-darkBorder transition-all duration-300 ${
-        collapsed ? 'w-16' : 'w-[260px]'
+      className={`flex h-full flex-col overflow-hidden bg-kitanda-sidebar border-r border-[#11182b] transition-all duration-300 ${
+        collapsed ? 'w-20' : 'w-[260px]'
       }`}
     >
-      <div className="flex items-center h-16 px-4 border-b border-kitanda-border dark:border-kitanda-darkBorder shrink-0">
+      <div className={`flex h-20 shrink-0 items-center border-b border-[#11182b] ${collapsed ? 'justify-center px-0' : 'px-5'}`}>
         <AppLogo
           showText={!collapsed}
-          markClassName="w-9 h-9"
-          textClassName="font-semibold text-kitanda-deep whitespace-nowrap"
+          markClassName="h-9 w-9 rounded-lg bg-white p-1 shadow-sm"
+          textClassName="font-semibold text-kitanda-darkText whitespace-nowrap"
         />
       </div>
 
-      <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-1">
-        {navItems.map((item) => {
-          const isActive = activeModule === item.module
-          return (
-            <div key={item.module}>
-              <button
-                onClick={() => {
-                  if (item.module === 'alunos') {
-                    setShowAlunosSubmenu(!showAlunosSubmenu)
-                  } else {
-                    onNavigate(item.module)
-                    onMobileClose()
-                  }
-                }}
-                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
-                  isActive
-                    ? 'bg-emerald-50 dark:bg-emerald-900/25 text-emerald-600 dark:text-emerald-400'
-                    : 'text-kitanda-muted dark:text-kitanda-darkTextMuted hover:bg-slate-50 dark:hover:bg-slate-800/30 hover:text-kitanda-deep dark:hover:text-kitanda-darkText'
-                } ${collapsed ? 'justify-center' : ''}`}
-                title={collapsed ? item.label : undefined}
-              >
-                <div className="flex items-center gap-3">
-                  <i className={`bi ${item.icon} text-lg ${isActive ? 'text-emerald-500' : ''}`} />
-                  {!collapsed && <span className="truncate">{item.label}</span>}
-                </div>
-                {!collapsed && item.module === 'alunos' && (
-                  <i className={`bi ${showAlunosSubmenu ? 'bi-chevron-down' : 'bi-chevron-right'} text-xs`} />
+      <nav className={`flex-1 overflow-y-auto py-4 ${collapsed ? 'px-2' : 'px-3'}`}>
+        <div className="space-y-2">
+          {navItems.map((item) => {
+            const isActive = activeModule === item.module
+            const isAlunos = item.module === 'alunos'
+
+            return (
+              <div key={item.module}>
+                <button
+                  onClick={() => {
+                    if (isAlunos) {
+                      setShowAlunosSubmenu((open) => !open)
+                      handleNavigate(item.module)
+                    } else {
+                      handleNavigate(item.module)
+                    }
+                  }}
+                  className={itemButtonClass(isActive)}
+                  title={collapsed ? item.label : undefined}
+                  type="button"
+                >
+                  <span className={`flex items-center ${collapsed ? 'justify-center' : 'gap-3'}`}>
+                    <i className={`bi ${item.icon} text-lg ${isActive ? 'text-kitanda-emerald' : 'text-[#6d789d]'}`} />
+                    {!collapsed && <span className="truncate">{item.label}</span>}
+                  </span>
+                  {!collapsed && isAlunos && (
+                    <i
+                      className={`bi bi-chevron-right text-xs text-[#6d789d] transition-transform ${
+                        showAlunosSubmenu ? 'rotate-90' : ''
+                      }`}
+                    />
+                  )}
+                </button>
+
+                {!collapsed && isAlunos && showAlunosSubmenu && (
+                  <div className="ml-10 mt-2 space-y-1">
+                    {alunoItems.map((label) => (
+                      <button
+                        key={label}
+                        className="w-full px-3 py-2 text-left text-xs font-medium text-[#697397] transition-colors hover:text-kitanda-emerald"
+                        type="button"
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
                 )}
-              </button>
-              
-              {!collapsed && showAlunosSubmenu && item.module === 'alunos' && (
-                <div className="mt-1 ml-9 space-y-1">
-                  <button className="w-full text-left px-3 py-2 text-sm text-gray-600 dark:text-kitanda-darkTextMuted hover:text-emerald-600 dark:hover:text-emerald-400">Inscrição</button>
-                  <button className="w-full text-left px-3 py-2 text-sm text-gray-600 dark:text-kitanda-darkTextMuted hover:text-emerald-600 dark:hover:text-emerald-400">Matrícula</button>
-                  <button className="w-full text-left px-3 py-2 text-sm text-gray-600 dark:text-kitanda-darkTextMuted hover:text-emerald-600 dark:hover:text-emerald-400">Confirmação</button>
-                </div>
-              )}
-            </div>
-          )
-        })}
+              </div>
+            )
+          })}
+        </div>
       </nav>
 
-      <div className="border-t border-kitanda-border dark:border-kitanda-darkBorder px-2 py-3">
+      <div className={collapsed ? 'px-2 py-2' : 'px-3 py-2'}>
         <button
-          onClick={() => onNavigate('configuracoes')}
-          className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
-            activeModule === 'configuracoes'
-              ? 'bg-emerald-50 dark:bg-emerald-900/25 text-emerald-600 dark:text-emerald-400'
-              : 'text-kitanda-muted dark:text-kitanda-darkTextMuted hover:bg-slate-50 dark:hover:bg-slate-800/30 hover:text-kitanda-deep dark:hover:text-kitanda-darkText'
-          } ${collapsed ? 'justify-center' : ''}`}
+          onClick={() => handleNavigate('configuracoes')}
+          className={itemButtonClass(activeModule === 'configuracoes')}
           title={collapsed ? 'Configurações' : undefined}
+          type="button"
         >
-          <i className={`bi bi-gear-fill text-lg ${activeModule === 'configuracoes' ? 'text-emerald-500' : ''}`} />
-          {!collapsed && <span>Configurações</span>}
+          <span className={`flex items-center ${collapsed ? 'justify-center' : 'gap-3'}`}>
+            <i className={`bi bi-gear text-lg ${activeModule === 'configuracoes' ? 'text-kitanda-emerald' : 'text-[#6d789d]'}`} />
+            {!collapsed && <span>Configurações</span>}
+          </span>
         </button>
       </div>
 
       <button
+        onClick={() => handleNavigate('configuracoes')}
+        className={`mx-auto mb-4 mt-3 flex items-center rounded-lg bg-[#061b24] text-left transition-colors hover:bg-[#082531] ${
+          collapsed ? 'h-12 w-12 justify-center p-0' : 'w-[calc(100%-2rem)] gap-3 p-2.5'
+        }`}
+        title={collapsed ? data.user.name : undefined}
+        type="button"
+      >
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#073b37] text-xs font-bold text-kitanda-emerald">
+          {data.user.name.slice(0, 2).toUpperCase()}
+        </div>
+        {!collapsed && (
+          <>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-semibold text-kitanda-darkText">{data.user.name}</p>
+              <p className="truncate text-[11px] font-medium text-kitanda-darkTextMuted">Perfil não configurado</p>
+            </div>
+            <i className="bi bi-chevron-right text-xs text-kitanda-darkTextMuted" />
+          </>
+        )}
+      </button>
+
+      <button
         onClick={onToggle}
-        className="hidden md:flex items-center justify-center h-10 border-t border-kitanda-border dark:border-kitanda-darkBorder text-kitanda-muted dark:text-kitanda-darkTextMuted hover:text-kitanda-deep dark:hover:text-kitanda-darkText transition-colors shrink-0"
+        className="hidden h-10 shrink-0 items-center justify-center border-t border-[#11182b] text-kitanda-darkTextMuted transition-colors hover:text-kitanda-darkText md:flex"
+        type="button"
       >
         <i className={`bi ${collapsed ? 'bi-chevron-right' : 'bi-chevron-left'} text-lg`} />
       </button>
@@ -109,17 +164,17 @@ export default function Sidebar({
 
   return (
     <>
-      <aside className="hidden md:block h-screen sticky top-0 shrink-0">
+      <aside className="hidden h-screen shrink-0 md:sticky md:top-0 md:block">
         {sidebarContent}
       </aside>
 
       {mobileOpen && (
-        <div className="md:hidden fixed inset-0 z-50 flex">
+        <div className="fixed inset-0 z-50 flex md:hidden">
           <div
-            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={onMobileClose}
           />
-          <div className="relative w-[260px] h-full shadow-xl">
+          <div className="relative h-full w-[260px] shadow-xl">
             {sidebarContent}
           </div>
         </div>

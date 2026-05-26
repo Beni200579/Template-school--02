@@ -13,19 +13,18 @@ const items = [
 
 export default function MobileNav({ activeModule, onNavigate }: MobileNavProps) {
   return (
-    <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white dark:bg-kitanda-darkCard border-t border-kitanda-border dark:border-kitanda-darkBorder px-2 pb-safe">
-      <div className="flex items-center justify-around h-16">
+    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-kitanda-border bg-white px-2 pb-safe md:hidden">
+      <div className="flex h-16 items-center justify-around">
         {items.map((item) => {
           const isActive = activeModule === item.module
           return (
             <button
               key={item.module}
               onClick={() => onNavigate(item.module)}
-              className={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                isActive
-                  ? 'text-emerald-500'
-                  : 'text-kitanda-muted dark:text-kitanda-darkTextMuted'
+              className={`flex flex-col items-center gap-0.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
+                isActive ? 'text-emerald-500' : 'text-kitanda-muted'
               }`}
+              type="button"
             >
               <i className={`bi ${item.icon} text-xl ${isActive ? 'text-emerald-500' : ''}`} />
               <span>{item.label}</span>
