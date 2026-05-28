@@ -352,7 +352,7 @@ export default function ServicosPage() {
               {filteredCatalog.map(service => {
                 const cat = CATEGORIES.find(c => c.id === service.category)
                 return (
-                  <div key={service.id} className={`rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:shadow-md ${!service.available && 'opacity-60 grayscale'}`}>
+                  <div key={service.id} className={`flex flex-col h-full rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:shadow-md ${!service.available && 'opacity-60 grayscale'}`}>
                     <div className="flex items-start justify-between mb-4">
                       <div className={`h-12 w-12 rounded-2xl ${cat?.color || 'bg-slate-500'} flex items-center justify-center text-white text-xl shadow-inner`}>
                         <i className={service.icon} />
@@ -366,7 +366,7 @@ export default function ServicosPage() {
                       )}
                     </div>
                     
-                    <div className="mb-6">
+                    <div className="mb-6 flex-grow">
                       <h4 className="text-sm font-black text-gray-950 mb-1">{service.name}</h4>
                       <p className="text-xs text-slate-500 leading-relaxed line-clamp-2">{service.description}</p>
                     </div>
