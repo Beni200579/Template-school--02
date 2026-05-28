@@ -728,7 +728,6 @@ export default function PagamentosPage() {
             <div className="h-8 w-8 bg-emerald-100 text-emerald-700 rounded-lg flex items-center justify-center"><i className="bi bi-wallet" /></div>
           </div>
           <p className="text-2xl font-extrabold text-gray-900 dark:text-kitanda-darkText mt-2">{totalRevenues.toLocaleString('pt-PT')} Kz</p>
-          <span className="text-[10px] text-emerald-600 font-semibold">✔ Liquidadas com sucesso</span>
         </div>
 
         <div className="rounded-18 border border-kitanda-border dark:border-kitanda-darkBorder bg-white dark:bg-slate-900 p-5 shadow-sm">
@@ -737,7 +736,6 @@ export default function PagamentosPage() {
             <div className="h-8 w-8 bg-blue-100 text-blue-700 rounded-lg flex items-center justify-center"><i className="bi bi-calendar-check" /></div>
           </div>
           <p className="text-2xl font-extrabold text-gray-900 dark:text-kitanda-darkText mt-2">{dailyRevenues.toLocaleString('pt-PT')} Kz</p>
-          <span className="text-[10px] text-blue-600 font-semibold"><i className="bi bi-clock mr-1" />Atualizado hoje ({todayStr})</span>
         </div>
 
         <div className="rounded-18 border border-kitanda-border dark:border-kitanda-darkBorder bg-white dark:bg-slate-900 p-5 shadow-sm">
@@ -746,7 +744,6 @@ export default function PagamentosPage() {
             <div className="h-8 w-8 bg-red-100 text-red-700 rounded-lg flex items-center justify-center"><i className="bi bi-exclamation-circle" /></div>
           </div>
           <p className="text-2xl font-extrabold text-red-600 mt-2">{totalDebts.toLocaleString('pt-PT')} Kz</p>
-          <span className="text-[10px] text-red-500 font-bold"><i className="bi bi-exclamation-triangle-fill mr-1" />Alunos em atraso: {delinquentList.length + overduePaymentsList.length}</span>
         </div>
 
         <div className="rounded-18 border border-kitanda-border dark:border-kitanda-darkBorder bg-white dark:bg-slate-900 p-5 shadow-sm">
@@ -755,7 +752,6 @@ export default function PagamentosPage() {
             <div className="h-8 w-8 bg-amber-100 text-amber-700 rounded-lg flex items-center justify-center"><i className="bi bi-link-45deg" /></div>
           </div>
           <p className="text-2xl font-extrabold text-gray-900 dark:text-kitanda-darkText mt-2">{activeFinancingCount}</p>
-          <span className="text-[10px] text-amber-600 font-semibold"><i className="bi bi-pie-chart-fill mr-1" />Créditos e bolsas parceladas</span>
         </div>
       </div>
 

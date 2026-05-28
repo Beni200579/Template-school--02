@@ -186,8 +186,8 @@ export default function AlunosPage({ action: initialAction }: { action?: string 
     const totalSteps = 7
     const filled = index + 1
     const pct = Math.round((filled / totalSteps) * 100)
-    const barFilled = '■'.repeat(filled)
-    const barEmpty = '□'.repeat(totalSteps - filled)
+    const barFilled = '|'.repeat(filled)
+    const barEmpty = '-'.repeat(totalSteps - filled)
     return `[${barFilled}${barEmpty}] ${pct}%`
   }
 
@@ -563,7 +563,7 @@ export default function AlunosPage({ action: initialAction }: { action?: string 
           <div className="rounded-18 border border-kitanda-border bg-white p-5 shadow-sm">
             <p className="text-xs text-kitanda-muted">Matrículas Efetuadas</p>
             <p className="text-2xl font-bold text-gray-900">{data.enrollmentApplications.length}</p>
-            <span className="text-[11px] text-emerald-600 font-semibold">✔ Alunos Ativos</span>
+            <span className="text-[11px] text-emerald-600 font-semibold">[OK] Alunos Ativos</span>
           </div>
           <div className="rounded-18 border border-kitanda-border bg-white p-5 shadow-sm">
             <p className="text-xs text-kitanda-muted">Vagas Totais</p>
@@ -655,22 +655,23 @@ export default function AlunosPage({ action: initialAction }: { action?: string 
                     <td className="px-4 py-3.5 flex items-center gap-3">
                       <img src={app.photo} alt="" className="h-8 w-8 rounded-full object-cover border border-gray-100" />
                       <div>
-                        <p className="font-semibold text-gray-900">{app.fullName}</p>
-                        <p className="text-[10px] text-kitanda-muted">{app.email}</p>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3.5 text-gray-700 font-medium">{app.course}</td>
-                    <td className="px-4 py-3.5 text-gray-500">{app.campus || 'Campus Central'}</td>
-                    <td className="px-4 py-3.5">
-                      <p className="font-semibold text-gray-900">{app.financial?.matriculaValue + app.financial?.propinaValue} Kz</p>
-                      <span className="text-[10px] text-emerald-600 font-medium">✔ Pago</span>
-                    </td>
-                    <td className="px-4 py-3.5 text-gray-500">{app.createdAt}</td>
-                    <td className="px-4 py-3.5">
-                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
-                        ● MATRICULADO
-                      </span>
-                    </td>
+                      <p className="font-semibold text-gray-900">{app.fullName}</p>
+                      <p className="text-[10px] text-kitanda-muted">{app.email}</p>
+                    </div>
+                  </td>
+                  <td className="px-4 py-3.5 text-gray-700 font-medium">{app.course}</td>
+                  <td className="px-4 py-3.5 text-gray-500">{app.campus || 'Campus Central'}</td>
+                  <td className="px-4 py-3.5">
+                    <p className="font-semibold text-gray-900">{app.financial?.matriculaValue + app.financial?.propinaValue} Kz</p>
+                    <span className="text-[10px] text-emerald-600 font-medium">[OK] Pago</span>
+                  </td>
+                  <td className="px-4 py-3.5 text-gray-500">{app.createdAt}</td>
+                  <td className="px-4 py-3.5">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
+                      MATRICULADO
+                    </span>
+                  </td>
+
                   </tr>
                 ))}
               </tbody>
@@ -701,8 +702,7 @@ export default function AlunosPage({ action: initialAction }: { action?: string 
               {getVisualProgress(currentStepIndex)}
             </span>
             <span className="text-xs text-emerald-600 font-semibold mt-1.5 flex items-center gap-1">
-              <span className="animate-pulse h-2 w-2 rounded-full bg-emerald-500"></span>
-              ⚡ Alterações salvas em tempo real
+              (Salvo) Alterações salvas em tempo real
             </span>
           </div>
         </div>
@@ -873,16 +873,33 @@ export default function AlunosPage({ action: initialAction }: { action?: string 
                     </Popover>
                   </label>
 
-                  <CustomSelect
-                    label="Gênero *"
-                    value={enrollmentData.gender}
-                    onChange={(val) => setEnrollmentData(prev => ({ ...prev, gender: val }))}
-                    options={[
-                      { label: "Selecionar", value: "" },
-                      { label: "Masculino", value: "Masculino" },
-                      { label: "Feminino", value: "Feminino" },
-                    ]}
-                  />
+                  <div className="space-y-2">
+                    <span className="block text-xs font-semibold text-gray-700">Gênero *</span>
+                    <div className="flex gap-4">
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="gender"
+                          value="Masculino"
+                          checked={enrollmentData.gender === "Masculino"}
+                          onChange={(e) => setEnrollmentData(prev => ({ ...prev, gender: e.target.value }))}
+                          className="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300"
+                        />
+                        <span className="text-sm text-gray-700">Masculino</span>
+                      </label>
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="gender"
+                          value="Feminino"
+                          checked={enrollmentData.gender === "Feminino"}
+                          onChange={(e) => setEnrollmentData(prev => ({ ...prev, gender: e.target.value }))}
+                          className="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300"
+                        />
+                        <span className="text-sm text-gray-700">Feminino</span>
+                      </label>
+                    </div>
+                  </div>
 
                   <label className="block">
                     <span className="mb-1.5 block text-xs font-semibold text-gray-700">Nacionalidade *</span>
@@ -1483,9 +1500,10 @@ export default function AlunosPage({ action: initialAction }: { action?: string 
                     <p><span className="text-slate-500">Nº do Documento ({enrollmentData.identityType}):</span> <span className="font-bold font-mono text-gray-900">{enrollmentData.identityNumber}</span></p>
                     <div className="flex flex-wrap gap-2 pt-1">
                       {enrollmentData.uploadedFiles.map(file => (
-                        <span key={file.id} className="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-lg text-[10px] font-bold">
-                          ✔ {file.category}: {file.name}
-                        </span>
+                      <span key={file.id} className="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-lg text-[10px] font-bold">
+                        [OK] {file.category}: {file.name}
+                      </span>
+
                       ))}
                     </div>
                   </div>
@@ -1599,10 +1617,11 @@ export default function AlunosPage({ action: initialAction }: { action?: string 
                   <h2 className="text-2xl font-black">Matrícula Efetuada com Sucesso!</h2>
                   <p className="text-xs text-emerald-100 max-w-md mx-auto">Registo institucional e credenciais geradas. O estudante foi oficialmente integrado na lista de Alunos Ativos.</p>
                   
-                  <div className="flex justify-center gap-3 pt-2">
-                    <span className="px-3.5 py-1 rounded-full bg-white/20 text-xs font-bold uppercase tracking-wider">✔ MATRICULADO</span>
-                    <span className="px-3.5 py-1 rounded-full bg-white/20 text-xs font-bold uppercase tracking-wider">✔ ALUNO ATIVO</span>
-                  </div>
+                    <div className="flex justify-center gap-3 pt-2">
+                      <span className="px-3.5 py-1 rounded-full bg-white/20 text-xs font-bold uppercase tracking-wider">[OK] MATRICULADO</span>
+                      <span className="px-3.5 py-1 rounded-full bg-white/20 text-xs font-bold uppercase tracking-wider">[OK] ALUNO ATIVO</span>
+                    </div>
+
                 </div>
 
                 {/* DIGITAL ID CARD PREVIEW */}
@@ -1968,7 +1987,7 @@ export default function AlunosPage({ action: initialAction }: { action?: string 
                         <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold ${
                           s.status === 'Ativo' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'
                         }`}>
-                          ● {s.status}
+                          {s.status}
                         </span>
                       </td>
                     </tr>

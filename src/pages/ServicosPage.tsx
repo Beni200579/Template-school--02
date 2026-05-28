@@ -349,41 +349,48 @@ export default function ServicosPage() {
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            {filteredCatalog.map(service => {
-              const cat = CATEGORIES.find(c => c.id === service.category)
-              return (
-                <div key={service.id} className={`rounded-18 border p-4 shadow-sm space-y-3 transition-all hover:shadow-md ${service.available ? 'bg-white border-kitanda-border' : 'bg-slate-50 border-slate-200 opacity-70'}`}>
-                  <div className="flex items-start justify-between">
-                    <div className={`h-10 w-10 rounded-xl ${cat?.color || 'bg-slate-500'} flex items-center justify-center text-white text-lg shadow-sm`}>
-                      <i className={service.icon} />
+              {filteredCatalog.map(service => {
+                const cat = CATEGORIES.find(c => c.id === service.category)
+                return (
+                  <div key={service.id} className={`rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:shadow-md ${!service.available && 'opacity-60 grayscale'}`}>
+                    <div className="flex items-start justify-between mb-4">
+                      <div className={`h-12 w-12 rounded-2xl ${cat?.color || 'bg-slate-500'} flex items-center justify-center text-white text-xl shadow-inner`}>
+                        <i className={service.icon} />
+                      </div>
+                      {service.paid ? (
+                        <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full">
+                          {formatKz(service.price)}
+                        </span>
+                      ) : (
+                        <span className="text-xs font-bold text-slate-600 bg-slate-100 px-3 py-1 rounded-full">Grátis</span>
+                      )}
                     </div>
-                    {service.paid ? (
-                      <span className="text-xs font-bold font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-lg">
-                        {formatKz(service.price)}
-                      </span>
-                    ) : (
-                      <span className="text-xs font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-lg">Grátis</span>
-                    )}
+                    
+                    <div className="mb-6">
+                      <h4 className="text-sm font-black text-gray-950 mb-1">{service.name}</h4>
+                      <p className="text-xs text-slate-500 leading-relaxed line-clamp-2">{service.description}</p>
+                    </div>
+
+                    <div className="flex items-center gap-4 text-xs text-slate-500 mb-6">
+                      <span className="flex items-center gap-1.5"><i className="bi bi-clock" />{service.estimatedTime}</span>
+                      <span className="flex items-center gap-1.5"><i className="bi bi-inboxes" />{service.limitPerStudent}</span>
+                    </div>
+                    
+                    <button
+                      onClick={() => openRequestForm(service)}
+                      disabled={!service.available}
+                      className={`w-full py-3 rounded-xl text-xs font-bold transition-all ${
+                        service.available 
+                          ? 'bg-gray-900 hover:bg-gray-800 text-white' 
+                          : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                      }`}
+                    >
+                      {service.available ? 'Solicitar Serviço' : 'Indisponível'}
+                    </button>
                   </div>
-                  <div>
-                    <h4 className="text-sm font-bold text-gray-900">{service.name}</h4>
-                    <p className="text-[10px] text-kitanda-muted mt-0.5 line-clamp-2">{service.description}</p>
-                  </div>
-                  <div className="flex items-center gap-3 text-[10px] text-slate-500">
-                    <span className="flex items-center gap-1"><i className="bi bi-clock" />{service.estimatedTime}</span>
-                    <span className="flex items-center gap-1"><i className="bi bi-inboxes" />{service.limitPerStudent}</span>
-                    {service.priority === 'alta' && <span className="text-amber-600 font-bold flex items-center gap-1"><i className="bi bi-exclamation-circle" />Urgente</span>}
-                  </div>
-                  <button
-                    onClick={() => openRequestForm(service)}
-                    disabled={!service.available}
-                    className={`w-full py-2 rounded-xl text-xs font-bold transition-all ${service.available ? 'bg-emerald-600 hover:bg-emerald-700 text-white' : 'bg-slate-200 text-slate-400 cursor-not-allowed'}`}
-                  >
-                    {service.available ? 'Solicitar Agora' : 'Indisponível'}
-                  </button>
-                </div>
-              )
-            })}
+                )
+              })}
+
           </div>
         </div>
       )}
