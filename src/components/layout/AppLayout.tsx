@@ -14,7 +14,6 @@ interface AppLayoutProps {
 }
 
 const actionMap: Record<string, string> = {
-  'alunos-matricular': 'alunos/matricular',
   'professores-novo': 'professores/novo',
   'tarefas-nova': 'tarefas/nova',
   'pagamentos-registrar': 'pagamentos/registrar',
@@ -65,7 +64,7 @@ export default function AppLayout({
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#f5f7fb] dark:bg-kitanda-darkBg">
+    <div className="flex h-screen overflow-hidden bg-[#f5f7fb]">
       <Sidebar
         collapsed={collapsed}
         activeModule={module}
@@ -83,11 +82,11 @@ export default function AppLayout({
           activeModule={module}
         />
 
-        <main className="flex-1 overflow-y-auto p-4 md:p-6">
+        <main className={`flex-1 ${module === 'alunos' ? 'overflow-hidden' : 'overflow-y-auto p-4 md:p-6'}`}>
           {children}
         </main>
 
-        <Footer />
+        {module !== 'alunos' && <Footer />}
       </div>
 
       <MobileNav activeModule={module} onNavigate={handleNavigate} />

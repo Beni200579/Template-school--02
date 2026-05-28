@@ -5,8 +5,8 @@ interface MobileNavProps {
 
 const items = [
   { module: 'dashboard', label: 'Início', icon: 'bi-house-fill' },
-  { module: 'alunos', label: 'Alunos', icon: 'bi-people-fill' },
-  { module: 'tarefas', label: 'Tarefas', icon: 'bi-check2-square' },
+  { module: 'inscricao', label: 'Admissões', icon: 'bi-pen-fill' },
+  { module: 'matriculas', label: 'Matrículas', icon: 'bi-mortarboard-fill' },
   { module: 'pagamentos', label: 'Finanças', icon: 'bi-credit-card-fill' },
   { module: 'configuracoes', label: 'Definições', icon: 'bi-gear-fill' },
 ]

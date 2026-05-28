@@ -720,7 +720,7 @@ export default function PagamentosPage() {
 
       {/* METRIC CARD STATS GRID */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="rounded-18 border border-kitanda-border dark:border-kitanda-darkBorder bg-white dark:bg-slate-900 p-5 shadow-sm shadow-slate-200/60">
+        <div className="rounded-18 border border-kitanda-border dark:border-kitanda-darkBorder bg-white dark:bg-slate-900 p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <p className="text-xs text-kitanda-muted dark:text-kitanda-darkTextMuted font-bold uppercase">Receitas Totais</p>
             <div className="h-8 w-8 bg-emerald-100 text-emerald-700 rounded-lg flex items-center justify-center"><i className="bi bi-wallet" /></div>
@@ -729,31 +729,31 @@ export default function PagamentosPage() {
           <span className="text-[10px] text-emerald-600 font-semibold">✔ Liquidadas com sucesso</span>
         </div>
 
-        <div className="rounded-18 border border-kitanda-border dark:border-kitanda-darkBorder bg-white dark:bg-slate-900 p-5 shadow-sm shadow-slate-200/60">
+        <div className="rounded-18 border border-kitanda-border dark:border-kitanda-darkBorder bg-white dark:bg-slate-900 p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <p className="text-xs text-kitanda-muted dark:text-kitanda-darkTextMuted font-bold uppercase">Receitas do Dia</p>
             <div className="h-8 w-8 bg-blue-100 text-blue-700 rounded-lg flex items-center justify-center"><i className="bi bi-calendar-check" /></div>
           </div>
           <p className="text-2xl font-extrabold text-gray-900 dark:text-kitanda-darkText mt-2">{dailyRevenues.toLocaleString('pt-PT')} Kz</p>
-          <span className="text-[10px] text-blue-600 font-semibold">🕒 Atualizado hoje ({todayStr})</span>
+          <span className="text-[10px] text-blue-600 font-semibold"><i className="bi bi-clock mr-1" />Atualizado hoje ({todayStr})</span>
         </div>
 
-        <div className="rounded-18 border border-kitanda-border dark:border-kitanda-darkBorder bg-white dark:bg-slate-900 p-5 shadow-sm shadow-slate-200/60">
+        <div className="rounded-18 border border-kitanda-border dark:border-kitanda-darkBorder bg-white dark:bg-slate-900 p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <p className="text-xs text-kitanda-muted dark:text-kitanda-darkTextMuted font-bold uppercase">Dívidas & Inadimplência</p>
             <div className="h-8 w-8 bg-red-100 text-red-700 rounded-lg flex items-center justify-center"><i className="bi bi-exclamation-circle" /></div>
           </div>
           <p className="text-2xl font-extrabold text-red-600 mt-2">{totalDebts.toLocaleString('pt-PT')} Kz</p>
-          <span className="text-[10px] text-red-500 font-bold">⚠️ Alunos em atraso: {delinquentList.length + overduePaymentsList.length}</span>
+          <span className="text-[10px] text-red-500 font-bold"><i className="bi bi-exclamation-triangle-fill mr-1" />Alunos em atraso: {delinquentList.length + overduePaymentsList.length}</span>
         </div>
 
-        <div className="rounded-18 border border-kitanda-border dark:border-kitanda-darkBorder bg-white dark:bg-slate-900 p-5 shadow-sm shadow-slate-200/60">
+        <div className="rounded-18 border border-kitanda-border dark:border-kitanda-darkBorder bg-white dark:bg-slate-900 p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <p className="text-xs text-kitanda-muted dark:text-kitanda-darkTextMuted font-bold uppercase">Financiamentos Ativos</p>
             <div className="h-8 w-8 bg-amber-100 text-amber-700 rounded-lg flex items-center justify-center"><i className="bi bi-link-45deg" /></div>
           </div>
           <p className="text-2xl font-extrabold text-gray-900 dark:text-kitanda-darkText mt-2">{activeFinancingCount}</p>
-          <span className="text-[10px] text-amber-600 font-semibold">📊 Créditos e bolsas parceladas</span>
+          <span className="text-[10px] text-amber-600 font-semibold"><i className="bi bi-pie-chart-fill mr-1" />Créditos e bolsas parceladas</span>
         </div>
       </div>
 
@@ -979,7 +979,7 @@ export default function PagamentosPage() {
                               {p.proofAttached.slice(0, 18)}...
                             </span>
                           ) : (
-                            <span className="text-red-500 font-bold">⚠️ Falta</span>
+                            <span className="text-red-500 font-bold"><i className="bi bi-x-circle-fill mr-1" />Falta</span>
                           )}
                         </td>
                         <td className="px-4 py-3.5">
@@ -1132,7 +1132,7 @@ export default function PagamentosPage() {
                       </div>
                       <div className="text-right">
                         <p className="font-mono font-bold text-gray-900 dark:text-kitanda-darkText">{df.remainingBalance.toLocaleString('pt-PT')} Kz</p>
-                        <span className="text-[9px] text-red-600 font-bold">⚠️ BLOQUEADO</span>
+                        <span className="text-[9px] text-red-600 font-bold"><i className="bi bi-lock-fill mr-1" />BLOQUEADO</span>
                       </div>
                     </div>
                   ))
@@ -1349,7 +1349,7 @@ export default function PagamentosPage() {
       {/* NEW FINANCING / BOLSA MODAL */}
       <Modal open={showFinModal} onClose={() => setShowFinModal(false)}>
         <ModalHeader title="Estruturar Plano de Financiamento ou Bolsa" onClose={() => setShowFinModal(false)} />
-        <form onSubmit={handleSubmitFinancing} className="p-6 space-y-4 text-xs">
+        <form onSubmit={handleSubmitFinancing} className="p-6 space-y-4 max-h-[80vh] overflow-y-auto text-xs">
           
           <div className="grid gap-4 md:grid-cols-2">
             
@@ -1449,10 +1449,10 @@ export default function PagamentosPage() {
             const addedAdminFeeValue = (baseInstallment * finFormData.adminFee) / 100
             const finalInstallmentValue = Math.round(baseInstallment + addedInterestValue + addedAdminFeeValue)
             return (
-              <div className="p-4 bg-slate-900 text-white rounded-xl space-y-1">
-                <p className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider">Cálculo Provisório do Contrato</p>
-                <p className="text-sm font-bold">Valor Mensal por Parcela: {finalInstallmentValue.toLocaleString('pt-PT')} Kz</p>
-                <p className="text-[10px] text-slate-400">Composto por {finFormData.installmentsCount} parcelas mensais amortizáveis.</p>
+              <div className="p-4 bg-emerald-50 border border-emerald-100 rounded-xl space-y-1">
+                <p className="text-[10px] text-emerald-700 font-bold uppercase tracking-wider">Cálculo Provisório do Contrato</p>
+                <p className="text-sm font-bold text-gray-900">Valor Mensal por Parcela: {finalInstallmentValue.toLocaleString('pt-PT')} Kz</p>
+                <p className="text-[10px] text-slate-500">Composto por {finFormData.installmentsCount} parcelas mensais amortizáveis.</p>
               </div>
             )
           })()}

@@ -60,6 +60,8 @@ interface StoreContextValue {
   removeStudent: (id: string) => void
   addInscription: (inscription: Omit<InscriptionRequest, 'status'>) => void
   approveInscription: (id: string) => void
+  rejectInscription: (id: string) => void
+  setInscriptionStatus: (id: string, status: InscriptionRequest['status']) => void
   addEnrollmentApplication: (application: EnrollmentApplication) => void
   addEnrollmentConfirmation: (confirmation: EnrollmentConfirmation) => void
   updateConfirmationStatus: (id: string, status: ApplicationStatus, rejectionReason?: string) => void
@@ -220,6 +222,20 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     }))
   }, [])
 
+  const rejectInscription = useCallback((id: string) => {
+    setData(prev => ({
+      ...prev,
+      inscriptions: prev.inscriptions.map(i => (i.id === id ? { ...i, status: 'REJEITADA' } : i)),
+    }))
+  }, [])
+
+  const setInscriptionStatus = useCallback((id: string, status: InscriptionRequest['status']) => {
+    setData(prev => ({
+      ...prev,
+      inscriptions: prev.inscriptions.map(i => (i.id === id ? { ...i, status } : i)),
+    }))
+  }, [])
+
   const addEnrollmentApplication = useCallback((application: EnrollmentApplication) => {
     setData(prev => ({ ...prev, enrollmentApplications: [...prev.enrollmentApplications, application] }))
   }, [])
@@ -344,6 +360,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         removeStudent,
         addInscription,
         approveInscription,
+        rejectInscription,
+        setInscriptionStatus,
         addEnrollmentApplication,
         addEnrollmentConfirmation,
         updateConfirmationStatus,

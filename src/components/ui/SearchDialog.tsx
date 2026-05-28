@@ -77,11 +77,11 @@ export default function SearchDialog({ open, onClose, onNavigate }: SearchDialog
 
   const handleSelect = (result: SearchResult) => {
     const moduleMap: Record<string, string> = {
-      Estudante: 'students',
-      Professor: 'teachers',
-      Tarefa: 'tasks',
+      Estudante: 'matriculas',
+      Professor: 'professores',
+      Tarefa: 'tarefas',
     }
-    const target = moduleMap[result.type] || ''
+    const target = moduleMap[result.type] || 'dashboard'
     onNavigate(target)
     onClose()
   }

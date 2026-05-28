@@ -3,8 +3,8 @@
 @custom-variant dark (&:where(.kitanda-never-dark, .kitanda-never-dark *));
 
 @theme {
-  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
   --color-kitanda-deep: #0F172A;
   --color-kitanda-emerald: #10B981;
   --color-kitanda-light: #F8FAFC;
@@ -24,7 +24,10 @@
 
 @layer base {
   *, ::after, ::before {
-    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
 
   body {
@@ -34,18 +37,18 @@
     overflow-x: hidden;
     transition: background-color 0.3s ease, color 0.3s ease;
     font-size: 0.875rem;
+    line-height: 1.5;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    letter-spacing: -0.025em;
+    font-weight: 600;
   }
 
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: var(--color-kitanda-border);
-    border-radius: 4px;
+    display: none;
   }
 }
 

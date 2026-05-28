@@ -1,3 +1,5 @@
+import { useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import type { ReactNode } from 'react'
 
 interface ModalProps {
@@ -7,20 +9,36 @@ interface ModalProps {
 }
 
 export default function Modal({ open, onClose, children }: ModalProps) {
+  const prevFocusRef = useRef<HTMLElement | null>(null)
+
+  useEffect(() => {
+    if (open) {
+      prevFocusRef.current = document.activeElement as HTMLElement
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+      prevFocusRef.current?.focus()
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [open])
+
   if (!open) return null
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-md"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-lg bg-white dark:bg-gray-900 rounded-[18px] shadow-xl overflow-hidden"
+        className="w-full max-w-lg bg-white dark:bg-gray-900 rounded-[18px] shadow-xl overflow-hidden flex flex-col max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {children}
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }
 

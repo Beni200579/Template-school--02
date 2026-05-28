@@ -33,8 +33,10 @@ function AppContent() {
     switch (module) {
       case 'dashboard':
         return <DashboardPage />
-      case 'alunos':
-        return <AlunosPage action={action} />
+      case 'inscricao':
+        return <AlunosPage module="inscricao" />
+      case 'matriculas':
+        return <AlunosPage module="matriculas" />
       case 'professores':
         return <ProfessoresPage action={action} />
       case 'turmas':

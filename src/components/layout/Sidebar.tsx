@@ -13,14 +13,10 @@ interface SidebarProps {
 
 const navItems = [
   { module: 'dashboard', label: 'Visão Geral', icon: 'bi-grid' },
-  { module: 'alunos', label: 'Alunos', icon: 'bi-person-plus' },
+  { module: 'inscricao', label: 'Pré-Inscrição', icon: 'bi-pen-fill' },
+  { module: 'matriculas', label: 'Matrículas', icon: 'bi-mortarboard' },
   { module: 'servicos', label: 'Serviços', icon: 'bi-briefcase' },
   { module: 'pagamentos', label: 'Finanças', icon: 'bi-wallet2' },
-]
-
-const alunoItems = [
-  { label: 'Inscrição', action: 'inscricao' },
-  { label: 'Matrículas', action: 'matriculas' },
 ]
 
 export default function Sidebar({
@@ -32,7 +28,6 @@ export default function Sidebar({
   onMobileClose,
 }: SidebarProps) {
   const { data } = useStore()
-  const [showAlunosSubmenu, setShowAlunosSubmenu] = useState(activeModule === 'alunos')
 
   const handleNavigate = (module: string, action?: string) => {
     onNavigate(module, action)
@@ -46,7 +41,7 @@ export default function Sidebar({
             ? 'bg-[#101827] text-kitanda-emerald before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:rounded-r before:bg-kitanda-emerald'
             : 'text-[#6d789d] hover:bg-[#0b1022] hover:text-kitanda-darkText'
         }`
-      : `relative flex w-full items-center justify-between px-3 py-3 text-sm font-semibold transition-colors ${
+      : `relative flex w-full items-center gap-3 px-3 py-3 text-sm font-semibold transition-colors ${
           active
             ? 'bg-[#101827] text-kitanda-darkText before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:rounded-r before:bg-kitanda-emerald'
             : 'text-kitanda-darkTextMuted hover:bg-[#0b1022] hover:text-kitanda-darkText'
@@ -70,19 +65,11 @@ export default function Sidebar({
         <div className="space-y-2">
           {navItems.map((item) => {
             const isActive = activeModule === item.module
-            const isAlunos = item.module === 'alunos'
 
             return (
               <div key={item.module}>
                 <button
-                  onClick={() => {
-                    if (isAlunos) {
-                      setShowAlunosSubmenu((open) => !open)
-                      handleNavigate(item.module, 'inscricao')
-                    } else {
-                      handleNavigate(item.module)
-                    }
-                  }}
+                  onClick={() => handleNavigate(item.module)}
                   className={itemButtonClass(isActive)}
                   title={collapsed ? item.label : undefined}
                   type="button"
@@ -91,30 +78,7 @@ export default function Sidebar({
                     <i className={`bi ${item.icon} text-lg ${isActive ? 'text-kitanda-emerald' : 'text-[#6d789d]'}`} />
                     {!collapsed && <span className="truncate">{item.label}</span>}
                   </span>
-                  {!collapsed && isAlunos && (
-                    <i
-                      className={`bi bi-chevron-right text-xs text-[#6d789d] transition-transform ${
-                        showAlunosSubmenu ? 'rotate-90' : ''
-                      }`}
-                    />
-                  )}
                 </button>
-
-                {!collapsed && isAlunos && showAlunosSubmenu && (
-                  <div className="ml-10 mt-2 space-y-1">
-                    {alunoItems.map((item, index) => (
-                      <button
-                        key={item.label}
-                        onClick={() => handleNavigate('alunos', item.action)}
-                        className="w-full px-3 py-2 text-left text-xs font-medium text-[#697397] transition-all duration-200 hover:translate-x-1 hover:text-kitanda-emerald"
-                        style={{ transitionDelay: `${index * 35}ms` }}
-                        type="button"
-                      >
-                        {item.label}
-                      </button>
-                    ))}
-                  </div>
-                )}
               </div>
             )
           })}

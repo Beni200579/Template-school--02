@@ -54,7 +54,7 @@ interface ServiceRequest {
   conclusionDate: string
 
   status: ServiceStatus
-  progress: number // 0-100
+  progress: number
   createdAt: string
   updatedAt: string
   history: { date: string; action: string; user: string }[]
@@ -119,13 +119,12 @@ export default function ServicosPage() {
   const { data: storeData, showToast } = useStore()
   const { user } = storeData
 
-  const [activeTab, setActiveTab] = useState<'catalogo' | 'pedidos' | 'admin'>('catalogo')
+  const [activeTab, setActiveTab] = useState<'catalogo' | 'pedidos'>('catalogo')
   const [requests, setRequests] = useState<ServiceRequest[]>([])
   const [showRequestModal, setShowRequestModal] = useState(false)
   const [selectedService, setSelectedService] = useState<CatalogService | null>(null)
   const [categoryFilter, setCategoryFilter] = useState('todas')
 
-  // Request form
   const [reqForm, setReqForm] = useState({
     description: '',
     observations: '',
@@ -135,11 +134,9 @@ export default function ServicosPage() {
     attachmentName: '',
   })
 
-  // Admin mode
   const [adminActionId, setAdminActionId] = useState<string | null>(null)
   const [adminActionType, setAdminActionType] = useState<'approve' | 'execute' | 'complete' | 'cancel'>('approve')
 
-  // Load from localStorage
   useEffect(() => {
     try {
       const saved = localStorage.getItem('kitanda_servicos_db')
@@ -155,19 +152,13 @@ export default function ServicosPage() {
     localStorage.setItem('kitanda_servicos_db', JSON.stringify({ requests: reqs }))
   }
 
-  const isAdmin = user.role === 'Diretor' || user.role === 'Secretaria' || user.role === 'Administrador'
-
   const filteredCatalog = CATALOG.filter(s => categoryFilter === 'todas' || s.category === categoryFilter)
-
-  const userRequests = requests.filter(r => r.studentName === user.name)
-  const adminRequests = requests.filter(r => r.status !== 'concluído' && r.status !== 'cancelado')
 
   const openRequestForm = (service: CatalogService) => {
     if (!service.available) {
       showToast('Este serviço está temporariamente indisponível.', 'error')
       return
     }
-    // Check limit
     const userCount = requests.filter(r => r.serviceId === service.id && r.studentName === user.name).length
     if (userCount >= service.limitPerStudent) {
       showToast(`Limite de solicitações atingido (${service.limitPerStudent}) para este serviço.`, 'error')
@@ -312,44 +303,38 @@ export default function ServicosPage() {
     <div className="space-y-6 fade-in-up">
 
       {/* HEADER */}
-      <div className="rounded-18 border border-kitanda-border dark:border-kitanda-darkBorder bg-white dark:bg-slate-950 p-5 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="rounded-18 border border-kitanda-border bg-white p-5 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <span className="text-xs font-semibold uppercase text-emerald-600 dark:text-emerald-400">Central de Serviços</span>
-          <h1 className="text-2xl font-extrabold text-gray-900 dark:text-kitanda-darkText mt-1">Portal de Serviços Académicos</h1>
-          <p className="text-sm text-kitanda-muted dark:text-kitanda-darkTextMuted">Solicite, acompanhe e receba serviços administrativos e académicos.</p>
+          <span className="text-xs font-semibold uppercase text-emerald-600">Central de Serviços</span>
+          <h1 className="text-2xl font-extrabold text-gray-900 mt-1">Serviços Académicos</h1>
+          <p className="text-sm text-kitanda-muted">Gestão de solicitações, catálogo de serviços e aprovações.</p>
         </div>
         <div className="flex gap-2">
-          <div className="rounded-xl border border-kitanda-border px-3.5 py-2 flex flex-col items-center bg-white dark:bg-slate-900">
+          <div className="rounded-xl border border-kitanda-border px-3.5 py-2 flex flex-col items-center bg-white">
             <p className="text-[9px] text-kitanda-muted uppercase font-bold">Solicitações</p>
-            <p className="text-lg font-black text-gray-900 dark:text-kitanda-darkText">{requests.length}</p>
+            <p className="text-lg font-black text-gray-900">{requests.length}</p>
           </div>
-          <div className="rounded-xl border border-kitanda-border px-3.5 py-2 flex flex-col items-center bg-white dark:bg-slate-900">
+          <div className="rounded-xl border border-kitanda-border px-3.5 py-2 flex flex-col items-center bg-white">
             <p className="text-[9px] text-kitanda-muted uppercase font-bold">Concluídos</p>
-            <p className="text-lg font-black text-gray-900 dark:text-kitanda-darkText">{requests.filter(r => r.status === 'concluído').length}</p>
+            <p className="text-lg font-black text-gray-900">{requests.filter(r => r.status === 'concluído').length}</p>
           </div>
         </div>
       </div>
 
       {/* TABS */}
-      <div className="flex border-b border-gray-200 dark:border-kitanda-darkBorder gap-2 overflow-x-auto">
+      <div className="flex border-b border-gray-200 gap-2 overflow-x-auto">
         <button onClick={() => setActiveTab('catalogo')} className={`px-4 py-2.5 text-xs font-bold border-b-2 transition-all ${activeTab === 'catalogo' ? 'border-emerald-600 text-emerald-600' : 'border-transparent text-kitanda-muted hover:text-gray-900'}`}>
           <i className="bi bi-grid-fill mr-1" /> Catálogo de Serviços
         </button>
         <button onClick={() => setActiveTab('pedidos')} className={`px-4 py-2.5 text-xs font-bold border-b-2 transition-all ${activeTab === 'pedidos' ? 'border-emerald-600 text-emerald-600' : 'border-transparent text-kitanda-muted hover:text-gray-900'}`}>
-          <i className="bi bi-clipboard-check mr-1" /> Os Meus Pedidos ({userRequests.length})
+          <i className="bi bi-clipboard-check mr-1" /> Gestão de Pedidos ({requests.filter(r => r.status !== 'concluído' && r.status !== 'cancelado').length})
         </button>
-        {isAdmin && (
-          <button onClick={() => setActiveTab('admin')} className={`px-4 py-2.5 text-xs font-bold border-b-2 transition-all ${activeTab === 'admin' ? 'border-emerald-600 text-emerald-600' : 'border-transparent text-kitanda-muted hover:text-gray-900'}`}>
-            <i className="bi bi-shield-fill mr-1" /> Admin ({adminRequests.length})
-          </button>
-        )}
       </div>
 
       {/* TAB 1: CATÁLOGO */}
       {activeTab === 'catalogo' && (
         <div className="space-y-6 page-swap">
 
-          {/* Category Filter Pills */}
           <div className="flex flex-wrap gap-2">
             <button onClick={() => setCategoryFilter('todas')} className={`px-3 py-1.5 rounded-full text-[10px] font-bold border transition-all ${categoryFilter === 'todas' ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white text-slate-600 border-slate-200 hover:border-emerald-400'}`}>
               Todas
@@ -362,12 +347,11 @@ export default function ServicosPage() {
             ))}
           </div>
 
-          {/* Service Grid */}
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {filteredCatalog.map(service => {
               const cat = CATEGORIES.find(c => c.id === service.category)
               return (
-                <div key={service.id} className={`rounded-18 border p-4 shadow-sm space-y-3 transition-all hover:shadow-md ${service.available ? 'bg-white dark:bg-slate-900 border-kitanda-border dark:border-kitanda-darkBorder' : 'bg-slate-50 border-slate-200 opacity-70'}`}>
+                <div key={service.id} className={`rounded-18 border p-4 shadow-sm space-y-3 transition-all hover:shadow-md ${service.available ? 'bg-white border-kitanda-border' : 'bg-slate-50 border-slate-200 opacity-70'}`}>
                   <div className="flex items-start justify-between">
                     <div className={`h-10 w-10 rounded-xl ${cat?.color || 'bg-slate-500'} flex items-center justify-center text-white text-lg shadow-sm`}>
                       <i className={service.icon} />
@@ -381,12 +365,13 @@ export default function ServicosPage() {
                     )}
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold text-gray-900 dark:text-kitanda-darkText">{service.name}</h4>
-                    <p className="text-[10px] text-kitanda-muted dark:text-kitanda-darkTextMuted mt-0.5 line-clamp-2">{service.description}</p>
+                    <h4 className="text-sm font-bold text-gray-900">{service.name}</h4>
+                    <p className="text-[10px] text-kitanda-muted mt-0.5 line-clamp-2">{service.description}</p>
                   </div>
-                  <div className="flex items-center justify-between text-[10px] text-slate-500">
-                    <span className="flex items-center gap-1"><i className="bi bi-clock" /> {service.estimatedTime}</span>
-                    <span className="flex items-center gap-1"><i className="bi bi-inboxes" /> Limite: {service.limitPerStudent}</span>
+                  <div className="flex items-center gap-3 text-[10px] text-slate-500">
+                    <span className="flex items-center gap-1"><i className="bi bi-clock" />{service.estimatedTime}</span>
+                    <span className="flex items-center gap-1"><i className="bi bi-inboxes" />{service.limitPerStudent}</span>
+                    {service.priority === 'alta' && <span className="text-amber-600 font-bold flex items-center gap-1"><i className="bi bi-exclamation-circle" />Urgente</span>}
                   </div>
                   <button
                     onClick={() => openRequestForm(service)}
@@ -402,113 +387,53 @@ export default function ServicosPage() {
         </div>
       )}
 
-      {/* TAB 2: MEUS PEDIDOS */}
+      {/* TAB 2: GESTÃO DE PEDIDOS (Admin) */}
       {activeTab === 'pedidos' && (
-        <div className="space-y-6 page-swap">
-          {userRequests.length === 0 ? (
-            <div className="rounded-18 border border-dashed border-slate-300 dark:border-kitanda-darkBorder bg-slate-50 dark:bg-slate-900 p-12 text-center space-y-2">
+        <div className="space-y-4 page-swap">
+          {requests.length === 0 ? (
+            <div className="rounded-18 border border-dashed border-slate-300 bg-slate-50 p-12 text-center">
               <i className="bi bi-inbox text-4xl text-slate-300" />
-              <p className="text-sm font-bold text-slate-600 dark:text-kitanda-darkText">Nenhuma solicitação encontrada.</p>
-              <p className="text-xs text-kitanda-muted dark:text-kitanda-darkTextMuted">Aceda ao catálogo e solicite o seu primeiro serviço académico.</p>
+              <p className="text-sm font-bold text-slate-600 mt-2">Nenhuma solicitação encontrada.</p>
+              <p className="text-xs text-kitanda-muted mt-1">As solicitações de serviços aparecerão aqui para gestão.</p>
             </div>
           ) : (
-            userRequests.map(req => {
-              const pct = req.progress
-              return (
-                <div key={req.id} className="rounded-18 border border-kitanda-border dark:border-kitanda-darkBorder bg-white dark:bg-slate-900 p-5 shadow-sm space-y-4">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                      <div className={`h-10 w-10 rounded-xl ${CATEGORIES.find(c => c.id === req.category)?.color || 'bg-slate-500'} flex items-center justify-center text-white text-lg`}>
-                        <i className={CATALOG.find(s => s.id === req.serviceId)?.icon || 'bi-gear'} />
-                      </div>
-                      <div>
-                        <h4 className="text-sm font-bold text-gray-900 dark:text-kitanda-darkText">{req.serviceName}</h4>
-                        <p className="text-[10px] text-kitanda-muted dark:text-kitanda-darkTextMuted font-mono">{req.serviceCode} • {req.requestDate}</p>
-                      </div>
+            requests.map(req => (
+              <div key={req.id} className="rounded-18 border border-kitanda-border bg-white shadow-sm">
+                <div className="p-4 flex items-start justify-between gap-3 border-b border-kitanda-border">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className={`h-9 w-9 rounded-xl ${CATEGORIES.find(c => c.id === req.category)?.color || 'bg-slate-500'} flex items-center justify-center text-white shrink-0`}>
+                      <i className={CATALOG.find(s => s.id === req.serviceId)?.icon || 'bi-gear'} />
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className={`px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${getStatusBadge(req.status)}`}>
-                        {req.status}
-                      </span>
-                      {req.paid && req.paymentStatus === 'pago' && (
-                        <span className="text-[9px] text-emerald-600 font-bold flex items-center gap-1"><i className="bi bi-check-circle" /> Pago</span>
-                      )}
+                    <div className="min-w-0">
+                      <h4 className="text-sm font-bold text-gray-900 truncate">{req.serviceName}</h4>
+                      <p className="text-[10px] text-kitanda-muted font-mono truncate">{req.studentName} • {req.serviceCode}</p>
                     </div>
                   </div>
-
-                  {/* Progress Bar */}
-                  <div className="space-y-1.5">
-                    <div className="flex justify-between text-[10px] text-kitanda-muted font-semibold">
-                      <span>Progresso</span>
-                      <span>{pct}%</span>
-                    </div>
-                    <div className="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                      <div className={`h-full rounded-full transition-all duration-700 ${pct < 28 ? 'bg-amber-500' : pct < 57 ? 'bg-blue-500' : 'bg-emerald-500'}`} style={{ width: `${pct}%` }} />
-                    </div>
-                    <div className="flex justify-between text-[9px] text-slate-400">
-                      {progressBars.map(step => (
-                        <span key={step.label} className={`${pct >= step.pct ? 'text-emerald-600 font-bold' : ''}`}>
-                          {pct >= step.pct ? '●' : '○'} {step.label}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Details & History */}
-                  <details className="text-xs text-slate-600 dark:text-kitanda-darkText border-t pt-3">
-                    <summary className="cursor-pointer font-semibold text-emerald-700 hover:underline">Ver detalhes e histórico</summary>
-                    <div className="mt-3 space-y-2">
-                      <p><span className="text-slate-500">Descrição:</span> {req.description}</p>
-                      {req.observations && <p><span className="text-slate-500">Observações:</span> {req.observations}</p>}
-                      {req.paid && <p><span className="text-slate-500">Pagamento:</span> {req.paymentMethod} — Ref: {req.paymentReference} — Recibo: {req.receiptNumber}</p>}
-                      <div className="border-t pt-2 mt-2 space-y-1">
-                        <p className="font-bold text-slate-600">Histórico:</p>
-                        {req.history.map((h, i) => (
-                          <p key={i} className="text-[10px] text-slate-500">[{h.date}] {h.action} — {h.user}</p>
-                        ))}
-                      </div>
-                    </div>
-                  </details>
+                  <span className={`px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase whitespace-nowrap shrink-0 ${getStatusBadge(req.status)}`}>{req.status}</span>
                 </div>
-              )
-            })
-          )}
-        </div>
-      )}
-
-      {/* TAB 3: ADMIN */}
-      {activeTab === 'admin' && isAdmin && (
-        <div className="space-y-6 page-swap">
-          {adminRequests.length === 0 ? (
-            <div className="rounded-18 border border-dashed border-slate-300 dark:border-kitanda-darkBorder bg-slate-50 dark:bg-slate-900 p-12 text-center">
-              <p className="text-sm font-bold text-slate-600 dark:text-kitanda-darkText">Nenhuma solicitação pendente.</p>
-              <p className="text-xs text-kitanda-muted dark:text-kitanda-darkTextMuted mt-1">Todas as solicitações foram processadas.</p>
-            </div>
-          ) : (
-            adminRequests.map(req => (
-              <div key={req.id} className="rounded-18 border border-kitanda-border dark:border-kitanda-darkBorder bg-white dark:bg-slate-900 p-4 shadow-sm space-y-3">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h4 className="text-sm font-bold text-gray-900 dark:text-kitanda-darkText">{req.serviceName}</h4>
-                    <p className="text-[10px] text-kitanda-muted font-mono">{req.serviceCode} • {req.studentName}</p>
+                <div className="px-4 py-3 space-y-2">
+                  <p className="text-xs text-slate-600 line-clamp-2">{req.description}</p>
+                  <div className="flex items-center gap-3 text-[10px] text-slate-500">
+                    <span className="flex items-center gap-1"><i className="bi bi-building" />{req.department}</span>
+                    <span className="flex items-center gap-1"><i className="bi bi-flag" />{req.priority}</span>
+                    <span className="flex items-center gap-1"><i className="bi bi-calendar3" />{req.requestDate}</span>
+                    {req.paid && req.paymentStatus === 'pago' && (
+                      <span className="text-emerald-600 font-bold flex items-center gap-1"><i className="bi bi-check-circle" /> Pago</span>
+                    )}
                   </div>
-                  <span className={`px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase ${getStatusBadge(req.status)}`}>{req.status}</span>
                 </div>
-                <p className="text-[11px] text-slate-600 dark:text-kitanda-darkText">{req.description}</p>
-                <p className="text-[10px] text-slate-500">Departamento: {req.department} • Prioridade: {req.priority}</p>
-
-                <div className="flex flex-wrap gap-2 pt-1 border-t">
+                <div className="px-4 py-3 bg-slate-50 border-t border-kitanda-border flex flex-wrap gap-2">
                   {req.status === 'pendente' && (
-                    <button onClick={() => { setAdminActionId(req.id); setAdminActionType('approve'); handleAdminAction() }} className="px-3 py-1.5 bg-blue-600 text-white rounded-lg text-[10px] font-bold hover:bg-blue-700">Aprovar</button>
+                    <button onClick={() => { setAdminActionId(req.id); setAdminActionType('approve'); handleAdminAction() }} className="px-3 py-1.5 bg-blue-600 text-white rounded-lg text-[10px] font-bold hover:bg-blue-700 flex items-center gap-1"><i className="bi bi-check-circle" />Aprovar</button>
                   )}
                   {req.status === 'aprovado' && (
-                    <button onClick={() => { setAdminActionId(req.id); setAdminActionType('execute'); handleAdminAction() }} className="px-3 py-1.5 bg-violet-600 text-white rounded-lg text-[10px] font-bold hover:bg-violet-700">Iniciar Execução</button>
+                    <button onClick={() => { setAdminActionId(req.id); setAdminActionType('execute'); handleAdminAction() }} className="px-3 py-1.5 bg-violet-600 text-white rounded-lg text-[10px] font-bold hover:bg-violet-700 flex items-center gap-1"><i className="bi bi-play-fill" />Executar</button>
                   )}
                   {req.status === 'em execução' && (
-                    <button onClick={() => { setAdminActionId(req.id); setAdminActionType('complete'); handleAdminAction() }} className="px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-[10px] font-bold hover:bg-emerald-700">Concluir Serviço</button>
+                    <button onClick={() => { setAdminActionId(req.id); setAdminActionType('complete'); handleAdminAction() }} className="px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-[10px] font-bold hover:bg-emerald-700 flex items-center gap-1"><i className="bi bi-check2-all" />Concluir</button>
                   )}
                   {req.status !== 'cancelado' && req.status !== 'concluído' && (
-                    <button onClick={() => { setAdminActionId(req.id); setAdminActionType('cancel'); handleAdminAction() }} className="px-3 py-1.5 border border-red-200 text-red-600 rounded-lg text-[10px] font-bold hover:bg-red-50">Cancelar</button>
+                    <button onClick={() => { setAdminActionId(req.id); setAdminActionType('cancel'); handleAdminAction() }} className="px-3 py-1.5 border border-red-200 text-red-600 rounded-lg text-[10px] font-bold hover:bg-red-50 flex items-center gap-1"><i className="bi bi-x-circle" />Cancelar</button>
                   )}
                 </div>
               </div>
@@ -521,7 +446,7 @@ export default function ServicosPage() {
       <Modal open={showRequestModal} onClose={() => setShowRequestModal(false)}>
         <ModalHeader title="Solicitar Serviço" onClose={() => setShowRequestModal(false)} />
         <div className="p-6 space-y-4 text-xs max-h-[80vh] overflow-y-auto">
-          
+
           {selectedService && (
             <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-100 space-y-1">
               <h4 className="font-black text-emerald-800">{selectedService.name}</h4>
@@ -574,7 +499,7 @@ export default function ServicosPage() {
           {selectedService?.paid && (
             <>
               <div className="border-t pt-4 space-y-4">
-                <p className="font-bold text-gray-900 text-sm">💳 Dados de Pagamento</p>
+                <p className="font-bold text-gray-900 text-sm"><i className="bi bi-credit-card-2-front mr-1" />Dados de Pagamento</p>
                 <label className="block">
                   <span className="mb-1.5 block font-semibold text-gray-700">Método de Pagamento *</span>
                   <select value={reqForm.paymentMethod} onChange={(e) => setReqForm(prev => ({ ...prev, paymentMethod: e.target.value }))}

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useStore } from '../store'
 import AppLogo from '../components/ui/AppLogo'
+import loginBg from '../lg/Gemini_Generated_Image_m0uzdvm0uzdvm0uz.png'
 
 export default function LoginPage() {
   const { setLoggedIn, showToast, data } = useStore()
@@ -14,135 +15,97 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen w-full bg-[#f6f8fb]">
-      <div className="hidden lg:flex relative w-[58%] min-h-screen overflow-hidden bg-white">
-        <div className="absolute inset-0 login-visual">
+    <div className="flex min-h-screen w-full bg-gray-50 items-center justify-center p-4">
+      <div className="flex w-full max-w-5xl bg-white rounded-3xl shadow-2xl overflow-hidden min-h-[600px]">
+        {/* Left Side: Image + Branding */}
+        <div className="hidden lg:flex w-1/2 relative bg-gray-900">
           <img
-            src="/sala_de_aula.png"
+            src={loginBg}
             alt="Sala de aula"
-            className="w-full h-full object-cover object-[35%_center]"
+            className="w-full h-full object-cover opacity-60"
           />
-        </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-white/96 via-white/74 to-white/18" />
-        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-emerald-50/95 via-white/45 to-transparent" />
-
-        <div className="relative z-10 flex flex-col justify-between p-12">
-          <AppLogo />
-
-          <div className="max-w-md">
-            <h1 className="text-kitanda-deep text-5xl font-bold leading-tight mb-4">
-              Gestão Escolar<br />Simplificada
-            </h1>
-            <p className="text-kitanda-muted text-lg leading-relaxed">
-              A plataforma completa para gerenciar sua instituição de ensino com
-              eficiência e praticidade.
-            </p>
-          </div>
-
-          <div className="flex items-center gap-4 text-kitanda-muted/80 text-xs">
-            <span>© 2026 Kitanda Escolar</span>
-            <span className="w-1 h-1 rounded-full bg-slate-300" />
-            <span>Termos de Uso</span>
-            <span className="w-1 h-1 rounded-full bg-slate-300" />
-            <span>Privacidade</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="relative flex-1 flex items-center justify-center p-4 md:p-8 min-h-screen bg-[radial-gradient(circle_at_top_right,rgba(16,185,129,0.16),transparent_34%),linear-gradient(135deg,#ffffff_0%,#eef7f2_100%)]">
-        <div className="absolute inset-0 lg:hidden">
-          <img
-            src="/sala_de_aula.png"
-            alt="Sala de aula"
-            className="w-full h-full object-cover object-[35%_center]"
-          />
-          <div className="absolute inset-0 bg-white/88" />
-        </div>
-
-        <div className="relative z-10 w-full max-w-md fade-in-up">
-          <AppLogo className="lg:hidden justify-center mb-8" />
-
-          <div className="rounded-18 bg-white border border-slate-200 p-7 md:p-9 shadow-xl shadow-slate-200/70">
-            <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-gray-900">
-                Acessar Plataforma
-              </h2>
-              <p className="text-kitanda-muted mt-2">
-                Faça login para continuar
-              </p>
-            </div>
-
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  E-mail
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-kitanda-muted">
-                    <i className="bi bi-envelope-fill" />
-                  </div>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-kitanda-border bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all text-sm"
-                    placeholder="seu@email.com"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Senha
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-kitanda-muted">
-                    <i className="bi bi-lock-fill" />
-                  </div>
-                  <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-kitanda-border bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all text-sm"
-                    placeholder="Sua senha"
-                  />
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between text-sm">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    defaultChecked
-                    className="w-4 h-4 rounded border-gray-300 text-emerald-500 focus:ring-emerald-500/40"
-                  />
-                  <span className="text-kitanda-muted">
-                    Lembrar-me
-                  </span>
-                </label>
-                <button
-                  type="button"
-                  className="text-emerald-600 hover:text-emerald-700 font-medium"
-                >
-                  Esqueci a senha
-                </button>
-              </div>
-
-              <button
-                type="submit"
-                className="w-full py-3 px-6 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/40 transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
-              >
-                Entrar na Plataforma
-                <i className="bi bi-arrow-right text-lg" />
-              </button>
-            </form>
-
-            <div className="mt-6 pt-6 border-t border-kitanda-border text-center">
-              <p className="text-xs text-kitanda-muted">
-                Ambiente seguro • Dados criptografados
+          <div className="absolute inset-0 p-12 flex flex-col justify-between text-white">
+            <h2 className="text-2xl font-bold flex items-center gap-2">
+              <AppLogo textClassName="text-white text-2xl font-bold tracking-tight" markClassName="h-9 w-9 bg-transparent" />
+            </h2>
+            
+            <div className="space-y-4">
+              <div className="px-3 py-1 bg-emerald-600 rounded-lg text-xs font-bold uppercase inline-block">Plataforma Colaborativa</div>
+              <h1 className="text-4xl font-bold leading-tight text-white">Kitanda <span className="text-white">Gestão Escolar</span></h1>
+              <p className="text-gray-300 text-sm leading-relaxed">
+                Liderança e eficácia administrativa na vanguarda da educação técnica nacional.
               </p>
             </div>
           </div>
+        </div>
+
+        {/* Right Side: Form */}
+        <div className="flex-1 flex flex-col justify-center p-12 lg:p-20">
+          <div className="mb-10">
+            <AppLogo className="mb-4" />
+            <p className="text-sm font-bold text-emerald-600 uppercase tracking-widest">Gestão Escolar</p>
+          </div>
+
+          <div className="mb-8">
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">Bem-vindo de volta</h2>
+            <p className="text-gray-500 text-sm">Entre para aceder ao sistema de gestão corporativa escolar.</p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label className="block text-xs font-bold text-gray-700 uppercase mb-2">E-MAIL DO ADMINISTRADOR</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                  <i className="bi bi-envelope" />
+                </div>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 transition-all text-sm"
+                  placeholder="felisminoebenezer@gmail.com"
+                />
+              </div>
+            </div>
+
+            <div>
+              <div className="flex justify-between items-center mb-2">
+                <label className="block text-xs font-bold text-gray-700 uppercase">SENHA DE ACESSO</label>
+                <button type="button" className="text-xs font-bold text-emerald-600 hover:text-emerald-700">Esqueceu a senha?</button>
+              </div>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                  <i className="bi bi-lock" />
+                </div>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full pl-10 pr-10 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 transition-all text-sm"
+                  placeholder="••••••••"
+                />
+                <div className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400">
+                  <i className="bi bi-eye" />
+                </div>
+              </div>
+            </div>
+
+            <label className="flex items-center gap-2 cursor-pointer mt-4">
+              <input type="checkbox" defaultChecked className="w-4 h-4 rounded border-gray-300 text-emerald-500 focus:ring-emerald-500" />
+              <span className="text-sm text-gray-600">Lembrar-me neste dispositivo</span>
+            </label>
+
+            <button
+              type="submit"
+              className="w-full py-3.5 mt-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition-all text-sm"
+            >
+              Entrar
+            </button>
+          </form>
+
+          <p className="mt-8 text-center text-xs text-gray-400">
+            © Kitanda Gestão Escolar 2026. Todos os direitos reservados.
+          </p>
         </div>
       </div>
     </div>

@@ -11,7 +11,8 @@ interface HeaderProps {
 
 const quickActionMap: Record<string, string> = {
   dashboard: 'tarefas',
-  alunos: 'alunos',
+  inscricao: 'matriculas',
+  matriculas: 'matriculas',
   professores: 'professores/novo',
   turmas: 'turmas/nova',
   notas: 'notas/lancar',
