@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { Chart, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from 'chart.js'
 import { useStore } from '../store'
 import type { Grade } from '../types'
+import { CustomSelect } from '../components/CustomSelect'
 
 Chart.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend)
 
@@ -124,41 +125,20 @@ export default function NotasPage() {
             Lançar Nota
           </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-kitanda-darkText mb-1.5">
-                Aluno
-              </label>
-              <select
-                required
-                value={selectedStudentId}
-                onChange={(e) => setSelectedStudentId(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl border border-kitanda-border dark:border-kitanda-darkBorder bg-white dark:bg-slate-900 text-gray-900 dark:text-kitanda-darkText text-sm focus:outline-none focus:ring-2 focus:ring-kitanda-sky/40 transition-shadow"
-              >
-                <option value="">Selecionar aluno</option>
-                {students.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.name} — {s.class}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <CustomSelect
+              label="Aluno"
+              value={selectedStudentId}
+              onChange={setSelectedStudentId}
+              options={students.map((s) => ({ label: `${s.name} — ${s.class}`, value: s.id }))}
+              placeholder="Selecionar aluno"
+            />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-kitanda-darkText mb-1.5">
-                Disciplina
-              </label>
-              <select
-                value={subject}
-                onChange={(e) => setSubject(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl border border-kitanda-border dark:border-kitanda-darkBorder bg-white dark:bg-slate-900 text-gray-900 dark:text-kitanda-darkText text-sm focus:outline-none focus:ring-2 focus:ring-kitanda-sky/40 transition-shadow"
-              >
-                {subjects.map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <CustomSelect
+              label="Disciplina"
+              value={subject}
+              onChange={setSubject}
+              options={subjects.map((s) => ({ label: s, value: s }))}
+            />
 
             <div className="grid grid-cols-3 gap-3">
               <div>

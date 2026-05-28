@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Modal, { ModalHeader } from '../components/ui/Modal'
+import { CustomSelect } from '../components/CustomSelect'
 import { useStore } from '../store'
 
 type ServiceStatus = 'disponível' | 'indisponível' | 'pendente' | 'em análise' | 'aprovado' | 'aguardando pagamento' | 'em execução' | 'concluído' | 'cancelado'
@@ -478,15 +479,16 @@ export default function ServicosPage() {
             />
           </label>
 
-          <label className="block">
-            <span className="mb-1.5 block font-semibold text-gray-700">Prioridade</span>
-            <select value={reqForm.priority} onChange={(e) => setReqForm(prev => ({ ...prev, priority: e.target.value as any }))}
-              className="w-full rounded-xl border border-kitanda-border px-3.5 py-2.5 text-sm outline-none">
-              <option value="baixa">Baixa</option>
-              <option value="média">Média</option>
-              <option value="alta">Alta</option>
-            </select>
-          </label>
+          <CustomSelect
+            label="Prioridade"
+            value={reqForm.priority}
+            onChange={(val) => setReqForm(prev => ({ ...prev, priority: val as any }))}
+            options={[
+              { label: 'Baixa', value: 'baixa' },
+              { label: 'Média', value: 'média' },
+              { label: 'Alta', value: 'alta' },
+            ]}
+          />
 
           <div className="block">
             <span className="mb-1.5 block font-semibold text-gray-700">Anexar Comprovativo / Documento</span>
@@ -500,16 +502,17 @@ export default function ServicosPage() {
             <>
               <div className="border-t pt-4 space-y-4">
                 <p className="font-bold text-gray-900 text-sm"><i className="bi bi-credit-card-2-front mr-1" />Dados de Pagamento</p>
-                <label className="block">
-                  <span className="mb-1.5 block font-semibold text-gray-700">Método de Pagamento *</span>
-                  <select value={reqForm.paymentMethod} onChange={(e) => setReqForm(prev => ({ ...prev, paymentMethod: e.target.value }))}
-                    className="w-full rounded-xl border border-kitanda-border px-3.5 py-2.5 text-sm outline-none">
-                    <option value="">Selecionar</option>
-                    <option value="Transferência Bancária">Transferência Bancária</option>
-                    <option value="Multicaixa Express">Multicaixa Express</option>
-                    <option value="Depósito">Depósito Bancário</option>
-                  </select>
-                </label>
+                <CustomSelect
+                  label="Método de Pagamento *"
+                  value={reqForm.paymentMethod}
+                  onChange={(val) => setReqForm(prev => ({ ...prev, paymentMethod: val }))}
+                  options={[
+                    { label: 'Selecionar', value: '' },
+                    { label: 'Transferência Bancária', value: 'Transferência Bancária' },
+                    { label: 'Multicaixa Express', value: 'Multicaixa Express' },
+                    { label: 'Depósito Bancário', value: 'Depósito' },
+                  ]}
+                />
                 <label className="block">
                   <span className="mb-1.5 block font-semibold text-gray-700">Nº de Referência / Comprovativo *</span>
                   <input type="text" value={reqForm.paymentReference} onChange={(e) => setReqForm(prev => ({ ...prev, paymentReference: e.target.value }))}

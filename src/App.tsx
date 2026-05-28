@@ -34,9 +34,9 @@ function AppContent() {
       case 'dashboard':
         return <DashboardPage />
       case 'inscricao':
-        return <AlunosPage module="inscricao" />
+        return <AlunosPage action="inscricao" />
       case 'matriculas':
-        return <AlunosPage module="matriculas" />
+        return <AlunosPage action="matriculas" />
       case 'professores':
         return <ProfessoresPage action={action} />
       case 'turmas':

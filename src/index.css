@@ -20,6 +20,25 @@
   --color-kitanda-darkText: #F8FAFC;
   --color-kitanda-darkTextMuted: #94A3B8;
   --radius-18: 18px;
+
+  /* Radix / shadcn compatibility tokens */
+  --color-background: #F8FAFC;
+  --color-foreground: #0F172A;
+  --color-card: #ffffff;
+  --color-card-foreground: #0F172A;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #0F172A;
+  --color-primary: #10B981;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #F1F5F9;
+  --color-secondary-foreground: #0F172A;
+  --color-muted: #F1F5F9;
+  --color-muted-foreground: #64748B;
+  --color-accent: #F1F5F9;
+  --color-accent-foreground: #0F172A;
+  --color-border: #E5E7EB;
+  --color-input: #E5E7EB;
+  --color-ring: #10B981;
 }
 
 @layer base {

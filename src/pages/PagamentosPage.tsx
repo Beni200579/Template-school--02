@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useStore } from '../store'
 import Modal, { ModalHeader } from '../components/ui/Modal'
+import { DatePickerField } from '../components/CustomCalendar'
+import { CustomSelect } from '../components/CustomSelect'
 
 // Local Types
 interface PaymentRecord {
@@ -901,31 +903,35 @@ export default function PagamentosPage() {
             </div>
             
             <div className="flex gap-2">
-              <select
+              <CustomSelect
                 value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-kitanda-border dark:border-kitanda-darkBorder text-gray-900 dark:text-kitanda-darkText text-xs rounded-xl"
-              >
-                <option value="todos">Todos Estados</option>
-                <option value="pago">Pago</option>
-                <option value="pendente">Pendente</option>
-                <option value="partialmente pago">Parcial</option>
-                <option value="vencido">Vencido</option>
-                <option value="cancelado">Cancelado</option>
-              </select>
+                onChange={setStatusFilter}
+                options={[
+                  { label: "Todos Estados", value: "todos" },
+                  { label: "Pago", value: "pago" },
+                  { label: "Pendente", value: "pendente" },
+                  { label: "Parcial", value: "partialmente pago" },
+                  { label: "Vencido", value: "vencido" },
+                  { label: "Cancelado", value: "cancelado" },
+                ]}
+                className="w-40"
+                triggerClassName="h-9 py-1 text-xs"
+              />
 
-              <select
+              <CustomSelect
                 value={typeFilter}
-                onChange={(e) => setTypeFilter(e.target.value)}
-                className="px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-kitanda-border dark:border-kitanda-darkBorder text-gray-900 dark:text-kitanda-darkText text-xs rounded-xl"
-              >
-                <option value="todos">Todas Taxas</option>
-                <option value="matrícula">Matrícula</option>
-                <option value="propina">Propina</option>
-                <option value="exame">Exame</option>
-                <option value="documento">Documento</option>
-                <option value="certificado">Certificado</option>
-              </select>
+                onChange={setTypeFilter}
+                options={[
+                  { label: "Todas Taxas", value: "todos" },
+                  { label: "Matrícula", value: "matrícula" },
+                  { label: "Propina", value: "propina" },
+                  { label: "Exame", value: "exame" },
+                  { label: "Documento", value: "documento" },
+                  { label: "Certificado", value: "certificado" },
+                ]}
+                className="w-40"
+                triggerClassName="h-9 py-1 text-xs"
+              />
             </div>
           </div>
 
@@ -1192,53 +1198,45 @@ export default function PagamentosPage() {
           
           <div className="grid gap-4 md:grid-cols-2">
             
-            <label className="block md:col-span-2">
-              <span className="mb-1.5 block text-xs font-semibold text-gray-700">Selecione o Estudante *</span>
-              <select
-                required
-                value={payFormData.studentId}
-                onChange={(e) => setPayFormData({ ...payFormData, studentId: e.target.value })}
-                className="w-full rounded-xl border border-kitanda-border bg-white px-3.5 py-2.5 text-sm"
-              >
-                <option value="">Selecione da Base Geral</option>
-                {students.map(s => (
-                  <option key={s.id} value={s.id}>{s.name} ({s.studentNumber || s.id})</option>
-                ))}
-              </select>
-            </label>
+            <CustomSelect
+              label="Selecione o Estudante *"
+              value={payFormData.studentId}
+              onChange={(val) => setPayFormData({ ...payFormData, studentId: val })}
+              options={[
+                { label: 'Selecione da Base Geral', value: '' },
+                ...students.map(s => ({ label: `${s.name} (${s.studentNumber || s.id})`, value: s.id }))
+              ]}
+              className="md:col-span-2"
+            />
 
-            <label className="block">
-              <span className="mb-1.5 block text-xs font-semibold text-gray-700">Tipo de Pagamento (Taxas) *</span>
-              <select
-                value={payFormData.type}
-                onChange={(e) => setPayFormData({ ...payFormData, type: e.target.value as PaymentRecord['type'] })}
-                className="w-full rounded-xl border border-kitanda-border bg-white px-3.5 py-2.5 text-sm"
-              >
-                <option value="propina">Propina / Mensalidade</option>
-                <option value="matrícula">Inscrição & Matrícula</option>
-                <option value="exame">Exame Geral / Recurso</option>
-                <option value="documento">Certificado / Emissão Declarativa</option>
-                <option value="transporte">Transporte Escolar</option>
-                <option value="uniforme">Uniforme & Fardas</option>
-                <option value="biblioteca">Biblioteca / Multas Fiscais</option>
-              </select>
-            </label>
+            <CustomSelect
+              label="Tipo de Pagamento (Taxas) *"
+              value={payFormData.type}
+              onChange={(val) => setPayFormData({ ...payFormData, type: val as PaymentRecord['type'] })}
+              options={[
+                { label: "Propina / Mensalidade", value: "propina" },
+                { label: "Inscrição & Matrícula", value: "matrícula" },
+                { label: "Exame Geral / Recurso", value: "exame" },
+                { label: "Certificado / Emissão Declarativa", value: "documento" },
+                { label: "Transporte Escolar", value: "transporte" },
+                { label: "Uniforme & Fardas", value: "uniforme" },
+                { label: "Biblioteca / Multas Fiscais", value: "biblioteca" },
+              ]}
+            />
 
-            <label className="block">
-              <span className="mb-1.5 block text-xs font-semibold text-gray-700">Método de Liquidação *</span>
-              <select
-                value={payFormData.method}
-                onChange={(e) => setPayFormData({ ...payFormData, method: e.target.value as PaymentRecord['method'] })}
-                className="w-full rounded-xl border border-kitanda-border bg-white px-3.5 py-2.5 text-sm"
-              >
-                <option value="transferência bancária">Transferência Bancária</option>
-                <option value="dinheiro">Dinheiro Físico (Tesouraria)</option>
-                <option value="cartão">Cartão de Débito/Crédito</option>
-                <option value="referência bancária">Referência Multicaixa</option>
-                <option value="multicaixa">Multicaixa Express</option>
-                <option value="depósito">Depósito Direto</option>
-              </select>
-            </label>
+            <CustomSelect
+              label="Método de Liquidação *"
+              value={payFormData.method}
+              onChange={(val) => setPayFormData({ ...payFormData, method: val as PaymentRecord['method'] })}
+              options={[
+                { label: "Transferência Bancária", value: "transferência bancária" },
+                { label: "Dinheiro Físico (Tesouraria)", value: "dinheiro" },
+                { label: "Cartão de Débito/Crédito", value: "cartão" },
+                { label: "Referência Multicaixa", value: "referência bancária" },
+                { label: "Multicaixa Express", value: "multicaixa" },
+                { label: "Depósito Direto", value: "depósito" },
+              ]}
+            />
 
             <label className="block">
               <span className="mb-1.5 block text-xs font-semibold text-gray-700">Valor Total do Serviço (Kz) *</span>
@@ -1272,16 +1270,12 @@ export default function PagamentosPage() {
               />
             </label>
 
-            <label className="block">
-              <span className="mb-1.5 block text-xs font-semibold text-gray-700">Data de Vencimento *</span>
-              <input
-                type="date"
-                required
-                value={payFormData.dueDate}
-                onChange={(e) => setPayFormData({ ...payFormData, dueDate: e.target.value })}
-                className="w-full rounded-xl border border-kitanda-border bg-white px-3.5 py-2.5 text-sm"
-              />
-            </label>
+            <DatePickerField
+              label="Data de Vencimento"
+              required
+              value={payFormData.dueDate}
+              onChange={(iso) => setPayFormData({ ...payFormData, dueDate: iso })}
+            />
 
             <label className="block md:col-span-2">
               <span className="mb-1.5 block text-xs font-semibold text-gray-700">Número de Referência Única do Talão *</span>
@@ -1353,34 +1347,28 @@ export default function PagamentosPage() {
           
           <div className="grid gap-4 md:grid-cols-2">
             
-            <label className="block md:col-span-2">
-              <span className="mb-1.5 block text-xs font-semibold text-gray-700">Selecione o Aluno *</span>
-              <select
-                required
-                value={finFormData.studentId}
-                onChange={(e) => setFinFormData({ ...finFormData, studentId: e.target.value })}
-                className="w-full rounded-xl border border-kitanda-border bg-white px-3.5 py-2.5 text-sm"
-              >
-                <option value="">Selecione o Aluno da Base Geral</option>
-                {students.map(s => (
-                  <option key={s.id} value={s.id}>{s.name} ({s.studentNumber || s.id})</option>
-                ))}
-              </select>
-            </label>
+            <CustomSelect
+              label="Selecione o Aluno *"
+              value={finFormData.studentId}
+              onChange={(val) => setFinFormData({ ...finFormData, studentId: val })}
+              options={[
+                { label: 'Selecione o Aluno da Base Geral', value: '' },
+                ...students.map(s => ({ label: `${s.name} (${s.studentNumber || s.id})`, value: s.id }))
+              ]}
+              className="md:col-span-2"
+            />
 
-            <label className="block">
-              <span className="mb-1.5 block text-xs font-semibold text-gray-700">Tipo de Financiamento *</span>
-              <select
-                value={finFormData.financingType}
-                onChange={(e) => setFinFormData({ ...finFormData, financingType: e.target.value as FinancingContract['financingType'] })}
-                className="w-full rounded-xl border border-kitanda-border bg-white px-3.5 py-2.5 text-sm"
-              >
-                <option value="Crédito Estudantil">Crédito Estudantil</option>
-                <option value="Bolsa Parcial">Bolsa Parcial / Subsidio</option>
-                <option value="Apoio Social">Apoio Social Interno</option>
-                <option value="Desconto Especial">Desconto Comercial Especial</option>
-              </select>
-            </label>
+            <CustomSelect
+              label="Tipo de Financiamento *"
+              value={finFormData.financingType}
+              onChange={(val) => setFinFormData({ ...finFormData, financingType: val as FinancingContract['financingType'] })}
+              options={[
+                { label: "Crédito Estudantil", value: "Crédito Estudantil" },
+                { label: "Bolsa Parcial / Subsidio", value: "Bolsa Parcial" },
+                { label: "Apoio Social Interno", value: "Apoio Social" },
+                { label: "Desconto Comercial Especial", value: "Desconto Especial" },
+              ]}
+            />
 
             <label className="block">
               <span className="mb-1.5 block text-xs font-semibold text-gray-700">Valor Total Financiado (Kz) *</span>
@@ -1403,19 +1391,17 @@ export default function PagamentosPage() {
               />
             </label>
 
-            <label className="block">
-              <span className="mb-1.5 block text-xs font-semibold text-gray-700">Quantidade de Parcelas Mensais *</span>
-              <select
-                value={finFormData.installmentsCount}
-                onChange={(e) => setFinFormData({ ...finFormData, installmentsCount: Number(e.target.value) })}
-                className="w-full rounded-xl border border-kitanda-border bg-white px-3.5 py-2.5 text-sm"
-              >
-                <option value="5">5 Parcelas</option>
-                <option value="8">8 Parcelas</option>
-                <option value="10">10 Parcelas (Anual Regular)</option>
-                <option value="12">12 Parcelas</option>
-              </select>
-            </label>
+            <CustomSelect
+              label="Quantidade de Parcelas Mensais *"
+              value={String(finFormData.installmentsCount)}
+              onChange={(val) => setFinFormData({ ...finFormData, installmentsCount: Number(val) })}
+              options={[
+                { label: "5 Parcelas", value: "5" },
+                { label: "8 Parcelas", value: "8" },
+                { label: "10 Parcelas (Anual Regular)", value: "10" },
+                { label: "12 Parcelas", value: "12" },
+              ]}
+            />
 
             <label className="block">
               <span className="mb-1.5 block text-xs font-semibold text-gray-700">Taxa de Juros por Parcela (%)</span>

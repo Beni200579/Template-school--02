@@ -2,6 +2,12 @@ import { useState, useEffect, useRef } from 'react'
 import type { FormEvent } from 'react'
 import { useStore } from '../store'
 import type { Student, EnrollmentApplication } from '../types'
+import { CustomCalendar, DatePickerField } from '../components/CustomCalendar'
+import { CustomSelect } from '../components/CustomSelect'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { CalendarIcon } from 'lucide-react'
+import { format } from 'date-fns'
+import { cn } from '@/lib/utils'
 
 const PRESET_AVATARS = [
   { name: 'Estudante 1 (Masculino)', url: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80' },
@@ -845,28 +851,38 @@ export default function AlunosPage({ action: initialAction }: { action?: string 
 
                   <label className="block">
                     <span className="mb-1.5 block text-xs font-semibold text-gray-700">Data de Nascimento *</span>
-                    <input
-                      type="date"
-                      required
-                      value={enrollmentData.birthDate}
-                      onChange={(e) => setEnrollmentData(prev => ({ ...prev, birthDate: e.target.value }))}
-                      className="w-full rounded-xl border border-kitanda-border bg-white px-3.5 py-2.5 text-sm text-gray-900 outline-none transition-shadow focus:ring-2 focus:ring-emerald-500/30"
-                    />
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <button
+                          type="button"
+                          className={cn(
+                            "w-full flex items-center rounded-xl border border-kitanda-border bg-white px-3.5 py-2.5 text-sm text-gray-900 outline-none transition-shadow focus:ring-2 focus:ring-emerald-500/30",
+                            !enrollmentData.birthDate && "text-gray-500"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {enrollmentData.birthDate ? format(new Date(enrollmentData.birthDate), "PPP") : <span>Escolha uma data</span>}
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <CustomCalendar 
+                          selectedDate={enrollmentData.birthDate ? new Date(enrollmentData.birthDate) : undefined} 
+                          onSelectDate={(date) => setEnrollmentData(prev => ({ ...prev, birthDate: date ? date.toISOString().split('T')[0] : '' }))} 
+                        />
+                      </PopoverContent>
+                    </Popover>
                   </label>
 
-                  <label className="block">
-                    <span className="mb-1.5 block text-xs font-semibold text-gray-700">Gênero *</span>
-                    <select
-                      value={enrollmentData.gender}
-                      onChange={(e) => setEnrollmentData(prev => ({ ...prev, gender: e.target.value }))}
-                      className="w-full rounded-xl border border-kitanda-border bg-white px-3.5 py-2.5 text-sm text-gray-900 outline-none transition-shadow focus:ring-2 focus:ring-emerald-500/30"
-                    >
-                      <option value="">Selecionar</option>
-                      <option value="Masculino">Masculino</option>
-                      <option value="Feminino">Feminino</option>
-                      <option value="Outro">Outro</option>
-                    </select>
-                  </label>
+                  <CustomSelect
+                    label="Gênero *"
+                    value={enrollmentData.gender}
+                    onChange={(val) => setEnrollmentData(prev => ({ ...prev, gender: val }))}
+                    options={[
+                      { label: "Selecionar", value: "" },
+                      { label: "Masculino", value: "Masculino" },
+                      { label: "Feminino", value: "Feminino" },
+                    ]}
+                  />
 
                   <label className="block">
                     <span className="mb-1.5 block text-xs font-semibold text-gray-700">Nacionalidade *</span>
@@ -880,20 +896,18 @@ export default function AlunosPage({ action: initialAction }: { action?: string 
                     />
                   </label>
 
-                  <label className="block">
-                    <span className="mb-1.5 block text-xs font-semibold text-gray-700">Estado Civil *</span>
-                    <select
-                      value={enrollmentData.maritalStatus}
-                      onChange={(e) => setEnrollmentData(prev => ({ ...prev, maritalStatus: e.target.value }))}
-                      className="w-full rounded-xl border border-kitanda-border bg-white px-3.5 py-2.5 text-sm text-gray-900 outline-none transition-shadow focus:ring-2 focus:ring-emerald-500/30"
-                    >
-                      <option value="">Selecionar</option>
-                      <option value="Solteiro(a)">Solteiro(a)</option>
-                      <option value="Casado(a)">Casado(a)</option>
-                      <option value="Divorciado(a)">Divorciado(a)</option>
-                      <option value="Viúvo(a)">Viúvo(a)</option>
-                    </select>
-                  </label>
+                  <CustomSelect
+                    label="Estado Civil *"
+                    value={enrollmentData.maritalStatus}
+                    onChange={(val) => setEnrollmentData(prev => ({ ...prev, maritalStatus: val }))}
+                    options={[
+                      { label: "Selecionar", value: "" },
+                      { label: "Solteiro(a)", value: "Solteiro(a)" },
+                      { label: "Casado(a)", value: "Casado(a)" },
+                      { label: "Divorciado(a)", value: "Divorciado(a)" },
+                      { label: "Viúvo(a)", value: "Viúvo(a)" },
+                    ]}
+                  />
 
                   <label className="block">
                     <span className="mb-1.5 block text-xs font-semibold text-gray-700">Telefone Móvel *</span>
@@ -943,17 +957,15 @@ export default function AlunosPage({ action: initialAction }: { action?: string 
                 </div>
 
                 <div className="grid gap-4 md:grid-cols-2">
-                  <label className="block">
-                    <span className="mb-1.5 block text-xs font-semibold text-gray-700">Tipo de Documento Principal</span>
-                    <select
-                      value={enrollmentData.identityType}
-                      onChange={(e) => setEnrollmentData(prev => ({ ...prev, identityType: e.target.value as 'BI' | 'PASSAPORTE' }))}
-                      className="w-full rounded-xl border border-kitanda-border bg-white px-3.5 py-2.5 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-emerald-500/30"
-                    >
-                      <option value="BI">Bilhete de Identidade (BI)</option>
-                      <option value="PASSAPORTE">Passaporte</option>
-                    </select>
-                  </label>
+                  <CustomSelect
+                    label="Tipo de Documento Principal"
+                    value={enrollmentData.identityType}
+                    onChange={(val) => setEnrollmentData(prev => ({ ...prev, identityType: val as 'BI' | 'PASSAPORTE' }))}
+                    options={[
+                      { label: "Bilhete de Identidade (BI)", value: "BI" },
+                      { label: "Passaporte", value: "PASSAPORTE" },
+                    ]}
+                  />
 
                   <label className="block">
                     <span className="mb-1.5 block text-xs font-semibold text-gray-700">Número do Documento (BI / Passaporte) *</span>
@@ -1080,62 +1092,52 @@ export default function AlunosPage({ action: initialAction }: { action?: string 
                 </div>
 
                 <div className="grid gap-4 md:grid-cols-2">
-                  <label className="block">
-                    <span className="mb-1.5 block text-xs font-semibold text-gray-700">Curso Pretendido *</span>
-                    <select
-                      value={enrollmentData.course}
-                      onChange={(e) => setEnrollmentData(prev => ({ ...prev, course: e.target.value }))}
-                      className="w-full rounded-xl border border-kitanda-border bg-white px-3.5 py-2.5 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-emerald-500/30"
-                    >
-                      <option value="">Selecionar Curso</option>
-                      {COURSES_LIST.map(c => (
-                        <option key={c.id} value={c.name}>{c.name}</option>
-                      ))}
-                    </select>
-                  </label>
+                  <CustomSelect
+                    label="Curso Pretendido *"
+                    value={enrollmentData.course}
+                    onChange={(val) => setEnrollmentData(prev => ({ ...prev, course: val }))}
+                    options={[
+                      { label: "Selecionar Curso", value: "" },
+                      ...COURSES_LIST.map(c => ({ label: c.name, value: c.name }))
+                    ]}
+                  />
 
-                  <label className="block">
-                    <span className="mb-1.5 block text-xs font-semibold text-gray-700">Ano / Classe *</span>
-                    <select
-                      value={enrollmentData.classYear}
-                      onChange={(e) => setEnrollmentData(prev => ({ ...prev, classYear: e.target.value }))}
-                      className="w-full rounded-xl border border-kitanda-border bg-white px-3.5 py-2.5 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-emerald-500/30"
-                    >
-                      <option value="1º Ano">1º Ano</option>
-                      <option value="2º Ano">2º Ano</option>
-                      <option value="3º Ano">3º Ano</option>
-                      <option value="4º Ano">4º Ano</option>
-                      <option value="5º Ano">5º Ano</option>
-                    </select>
-                  </label>
+                  <CustomSelect
+                    label="Ano / Classe *"
+                    value={enrollmentData.classYear}
+                    onChange={(val) => setEnrollmentData(prev => ({ ...prev, classYear: val }))}
+                    options={[
+                      { label: "1º Ano", value: "1º Ano" },
+                      { label: "2º Ano", value: "2º Ano" },
+                      { label: "3º Ano", value: "3º Ano" },
+                      { label: "4º Ano", value: "4º Ano" },
+                      { label: "5º Ano", value: "5º Ano" },
+                    ]}
+                  />
 
-                  <label className="block">
-                    <span className="mb-1.5 block text-xs font-semibold text-gray-700">Turno de Aulas *</span>
-                    <select
-                      value={enrollmentData.shift}
-                      onChange={(e) => setEnrollmentData(prev => ({ ...prev, shift: e.target.value }))}
-                      className="w-full rounded-xl border border-kitanda-border bg-white px-3.5 py-2.5 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-emerald-500/30"
-                    >
-                      <option value="">Selecionar Turno</option>
-                      <option value="Manhã">Manhã (07:30 - 12:30)</option>
-                      <option value="Tarde">Tarde (13:00 - 18:00)</option>
-                      <option value="Noite">Noite (18:30 - 22:30)</option>
-                    </select>
-                  </label>
+                  <CustomSelect
+                    label="Turno de Aulas *"
+                    value={enrollmentData.shift}
+                    onChange={(val) => setEnrollmentData(prev => ({ ...prev, shift: val }))}
+                    options={[
+                      { label: "Selecionar Turno", value: "" },
+                      { label: "Manhã (07:30 - 12:30)", value: "Manhã" },
+                      { label: "Tarde (13:00 - 18:00)", value: "Tarde" },
+                      { label: "Noite (18:30 - 22:30)", value: "Noite" },
+                    ]}
+                  />
 
-                  <label className="block">
-                    <span className="mb-1.5 block text-xs font-semibold text-gray-700">Turma Designada *</span>
-                    <select
-                      value={enrollmentData.turma}
-                      onChange={(e) => setEnrollmentData(prev => ({ ...prev, turma: e.target.value }))}
-                      className="w-full rounded-xl border border-kitanda-border bg-white px-3.5 py-2.5 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-emerald-500/30"
-                    >
-                      <option value="">Selecionar Turma</option>
-                      <option value="Turma A">Turma A</option>
-                      <option value="Turma B">Turma B</option>
-                      <option value="Turma C">Turma C</option>
-                    </select>
-                  </label>
+                  <CustomSelect
+                    label="Turma Designada *"
+                    value={enrollmentData.turma}
+                    onChange={(val) => setEnrollmentData(prev => ({ ...prev, turma: val }))}
+                    options={[
+                      { label: "Selecionar Turma", value: "" },
+                      { label: "Turma A", value: "Turma A" },
+                      { label: "Turma B", value: "Turma B" },
+                      { label: "Turma C", value: "Turma C" },
+                    ]}
+                  />
 
                   <label className="block">
                     <span className="mb-1.5 block text-xs font-semibold text-gray-700">Campus Universitário</span>
@@ -1147,18 +1149,16 @@ export default function AlunosPage({ action: initialAction }: { action?: string 
                     />
                   </label>
 
-                  <label className="block">
-                    <span className="mb-1.5 block text-xs font-semibold text-gray-700">Modalidade de Ensino *</span>
-                    <select
-                      value={enrollmentData.modality}
-                      onChange={(e) => setEnrollmentData(prev => ({ ...prev, modality: e.target.value }))}
-                      className="w-full rounded-xl border border-kitanda-border bg-white px-3.5 py-2.5 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-emerald-500/30"
-                    >
-                      <option value="Presencial">Presencial</option>
-                      <option value="EAD">Ensino a Distância (EAD)</option>
-                      <option value="Híbrido">Ensino Híbrido</option>
-                    </select>
-                  </label>
+                  <CustomSelect
+                    label="Modalidade de Ensino *"
+                    value={enrollmentData.modality}
+                    onChange={(val) => setEnrollmentData(prev => ({ ...prev, modality: val }))}
+                    options={[
+                      { label: "Presencial", value: "Presencial" },
+                      { label: "Ensino a Distância (EAD)", value: "EAD" },
+                      { label: "Ensino Híbrido", value: "Híbrido" },
+                    ]}
+                  />
                 </div>
 
                 {/* Real-time Vacancies Card indicator */}
@@ -1220,35 +1220,31 @@ export default function AlunosPage({ action: initialAction }: { action?: string 
                     />
                   </label>
 
-                  <label className="block">
-                    <span className="mb-1.5 block text-xs font-semibold text-gray-700">Plano de Desconto / Bolsa (%)</span>
-                    <select
-                      value={enrollmentData.discountPercent}
-                      onChange={(e) => setEnrollmentData(prev => ({ ...prev, discountPercent: Number(e.target.value) }))}
-                      className="w-full rounded-xl border border-kitanda-border bg-white px-3.5 py-2.5 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-emerald-500/30"
-                    >
-                      <option value="0">Sem desconto (0%)</option>
-                      <option value="10">Desconto Comercial / Familiar (10%)</option>
-                      <option value="25">Meio de Bolsa Parcial (25%)</option>
-                      <option value="50">Bolsa de Mérito Académico (50%)</option>
-                      <option value="100">Bolsa Integral / Isento (100%)</option>
-                    </select>
-                  </label>
+                  <CustomSelect
+                    label="Plano de Desconto / Bolsa (%)"
+                    value={String(enrollmentData.discountPercent)}
+                    onChange={(val) => setEnrollmentData(prev => ({ ...prev, discountPercent: Number(val) }))}
+                    options={[
+                      { label: "Sem desconto (0%)", value: "0" },
+                      { label: "Desconto Comercial / Familiar (10%)", value: "10" },
+                      { label: "Meio de Bolsa Parcial (25%)", value: "25" },
+                      { label: "Bolsa de Mérito Académico (50%)", value: "50" },
+                      { label: "Bolsa Integral / Isento (100%)", value: "100" },
+                    ]}
+                  />
 
-                  <label className="block">
-                    <span className="mb-1.5 block text-xs font-semibold text-gray-700">Método de Pagamento Utilizado *</span>
-                    <select
-                      value={enrollmentData.paymentMethod}
-                      onChange={(e) => setEnrollmentData(prev => ({ ...prev, paymentMethod: e.target.value }))}
-                      className="w-full rounded-xl border border-kitanda-border bg-white px-3.5 py-2.5 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-emerald-500/30"
-                    >
-                      <option value="">Selecionar Método</option>
-                      <option value="Transferência Bancária">Transferência Bancária</option>
-                      <option value="Depósito Bancário">Depósito Bancário</option>
-                      <option value="Multicaixa Express">Multicaixa Express</option>
-                      <option value="Dinheiro Físico">Dinheiro Físico (Tesouraria)</option>
-                    </select>
-                  </label>
+                  <CustomSelect
+                    label="Método de Pagamento Utilizado *"
+                    value={enrollmentData.paymentMethod}
+                    onChange={(val) => setEnrollmentData(prev => ({ ...prev, paymentMethod: val }))}
+                    options={[
+                      { label: "Selecionar Método", value: "" },
+                      { label: "Transferência Bancária", value: "Transferência Bancária" },
+                      { label: "Depósito Bancário", value: "Depósito Bancário" },
+                      { label: "Multicaixa Express", value: "Multicaixa Express" },
+                      { label: "Dinheiro Físico", value: "Dinheiro Físico" },
+                    ]}
+                  />
 
                   <label className="block">
                     <span className="mb-1.5 block text-xs font-semibold text-gray-700">Nº de Comprovativo ou ID de Transação *</span>
@@ -1386,21 +1382,19 @@ export default function AlunosPage({ action: initialAction }: { action?: string 
                       />
                     </label>
 
-                    <label className="block">
-                      <span className="mb-1.5 block text-xs font-semibold text-gray-700">Grau de Parentesco *</span>
-                      <select
-                        value={enrollmentData.guardianRelation}
-                        onChange={(e) => setEnrollmentData(prev => ({ ...prev, guardianRelation: e.target.value }))}
-                        className="w-full rounded-xl border border-kitanda-border bg-white px-3.5 py-2.5 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-emerald-500/30"
-                      >
-                        <option value="">Selecionar</option>
-                        <option value="Pai">Pai</option>
-                        <option value="Mãe">Mãe</option>
-                        <option value="Tio/a">Tio/a</option>
-                        <option value="Irmão/ã">Irmão/ã</option>
-                        <option value="Tutor/a">Tutor/a Legal</option>
-                      </select>
-                    </label>
+                    <CustomSelect
+                      label="Grau de Parentesco *"
+                      value={enrollmentData.guardianRelation}
+                      onChange={(val) => setEnrollmentData(prev => ({ ...prev, guardianRelation: val }))}
+                      options={[
+                        { label: "Selecionar", value: "" },
+                        { label: "Pai", value: "Pai" },
+                        { label: "Mãe", value: "Mãe" },
+                        { label: "Tio/a", value: "Tio/a" },
+                        { label: "Irmão/ã", value: "Irmão/ã" },
+                        { label: "Tutor/a Legal", value: "Tutor/a" },
+                      ]}
+                    />
 
                     <label className="block">
                       <span className="mb-1.5 block text-xs font-semibold text-gray-700">Telefone do Responsável *</span>
@@ -1847,42 +1841,34 @@ export default function AlunosPage({ action: initialAction }: { action?: string 
               />
             </label>
 
-            <label className="block">
-              <span className="mb-1.5 block text-xs font-semibold text-gray-700">Data de nascimento</span>
-              <input
-                type="date" value={inscForm.birthDate}
-                onChange={(e) => setInscForm({ ...inscForm, birthDate: e.target.value })}
-                className="w-full rounded-xl border border-kitanda-border bg-white px-3 py-2.5 text-sm text-gray-900 outline-none"
-              />
-            </label>
+            <DatePickerField
+              label="Data de nascimento"
+              value={inscForm.birthDate}
+              onChange={(iso) => setInscForm({ ...inscForm, birthDate: iso })}
+              startMonth={new Date(1960, 0)}
+              endMonth={new Date()}
+            />
 
-            <label className="block">
-              <span className="mb-1.5 block text-xs font-semibold text-gray-700">Gênero</span>
-              <select
-                value={inscForm.gender}
-                onChange={(e) => setInscForm({ ...inscForm, gender: e.target.value })}
-                className="w-full rounded-xl border border-kitanda-border bg-white px-3 py-2.5 text-sm text-gray-900 outline-none"
-              >
-                <option value="">Selecionar</option>
-                <option value="Feminino">Feminino</option>
-                <option value="Masculino">Masculino</option>
-                <option value="Outro">Outro</option>
-              </select>
-            </label>
+            <CustomSelect
+              label="Gênero"
+              value={inscForm.gender}
+              onChange={(val) => setInscForm({ ...inscForm, gender: val })}
+              options={[
+                { label: "Selecionar", value: "" },
+                { label: "Feminino", value: "Feminino" },
+                { label: "Masculino", value: "Masculino" },
+              ]}
+            />
 
-            <label className="block">
-              <span className="mb-1.5 block text-xs font-semibold text-gray-700">Curso de interesse *</span>
-              <select
-                required value={inscForm.courseInterest}
-                onChange={(e) => setInscForm({ ...inscForm, courseInterest: e.target.value })}
-                className="w-full rounded-xl border border-kitanda-border bg-white px-3 py-2.5 text-sm text-gray-900 outline-none"
-              >
-                <option value="">Selecionar</option>
-                {COURSES_LIST.map(c => (
-                  <option key={c.id} value={c.name}>{c.name}</option>
-                ))}
-              </select>
-            </label>
+            <CustomSelect
+              label="Curso de interesse *"
+              value={inscForm.courseInterest}
+              onChange={(val) => setInscForm({ ...inscForm, courseInterest: val })}
+              options={[
+                { label: "Selecionar", value: "" },
+                ...COURSES_LIST.map(c => ({ label: c.name, value: c.name }))
+              ]}
+            />
 
             <label className="block">
               <span className="mb-1.5 block text-xs font-semibold text-gray-700">Nível académico</span>

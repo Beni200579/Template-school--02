@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useStore } from '../store'
 import Modal, { ModalHeader } from '../components/ui/Modal'
+import { CustomSelect } from '../components/CustomSelect'
 import type { Announcement } from '../types'
 
 const categories = ['INFO', 'URGENTE']
@@ -116,19 +117,12 @@ export default function ComunicadosPage() {
               placeholder="Título do comunicado"
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-kitanda-darkText mb-1.5">Categoria</label>
-            <select
-              required
-              value={formData.category}
-              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-              className="w-full px-4 py-2.5 rounded-xl border border-kitanda-border dark:border-kitanda-darkBorder bg-white dark:bg-slate-900 text-gray-900 dark:text-kitanda-darkText text-sm focus:outline-none focus:ring-2 focus:ring-kitanda-sky/40 transition-shadow"
-            >
-              {categories.map((c) => (
-                <option key={c} value={c}>{c}</option>
-              ))}
-            </select>
-          </div>
+          <CustomSelect
+            label="Categoria"
+            value={formData.category}
+            onChange={(val) => setFormData({ ...formData, category: val })}
+            options={categories.map((c) => ({ label: c, value: c }))}
+          />
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-kitanda-darkText mb-1.5">Mensagem</label>
             <textarea

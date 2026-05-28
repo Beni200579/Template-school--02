@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { useStore } from '../store'
 import type { Task } from '../types'
 import Modal, { ModalHeader } from '../components/ui/Modal'
+import { CustomSelect } from '../components/CustomSelect'
+import { DatePickerField } from '../components/CustomCalendar'
 
 const priorityConfig: Record<string, { label: string; class: string }> = {
   alta: { label: 'Alta', class: 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300' },
@@ -220,20 +222,16 @@ export default function TarefasPage({ action }: { action?: string }) {
               placeholder="Ex: Matemática"
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-kitanda-darkText mb-1.5">
-              Prioridade
-            </label>
-            <select
-              value={priority}
-              onChange={(e) => setPriority(e.target.value as Task['priority'])}
-              className="w-full px-4 py-2.5 rounded-xl border border-kitanda-border dark:border-kitanda-darkBorder bg-white dark:bg-slate-900 text-gray-900 dark:text-kitanda-darkText text-sm focus:outline-none focus:ring-2 focus:ring-kitanda-sky/40 transition-shadow"
-            >
-              <option value="alta">Alta</option>
-              <option value="media">Média</option>
-              <option value="baixa">Baixa</option>
-            </select>
-          </div>
+          <CustomSelect
+            label="Prioridade"
+            value={priority}
+            onChange={(val) => setPriority(val as Task['priority'])}
+            options={[
+              { label: 'Alta', value: 'alta' },
+              { label: 'Média', value: 'media' },
+              { label: 'Baixa', value: 'baixa' },
+            ]}
+          />
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-kitanda-darkText mb-1.5">
               Professor
@@ -246,18 +244,12 @@ export default function TarefasPage({ action }: { action?: string }) {
               placeholder="Nome do professor"
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-kitanda-darkText mb-1.5">
-              Data Limite
-            </label>
-            <input
-              type="date"
-              required
-              value={deadline}
-              onChange={(e) => setDeadline(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-kitanda-border dark:border-kitanda-darkBorder bg-white dark:bg-slate-900 text-gray-900 dark:text-kitanda-darkText text-sm focus:outline-none focus:ring-2 focus:ring-kitanda-sky/40 transition-shadow"
-            />
-          </div>
+          <DatePickerField
+            label="Data Limite"
+            required
+            value={deadline}
+            onChange={(iso) => setDeadline(iso)}
+          />
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-kitanda-darkText mb-1.5">
               Descrição
