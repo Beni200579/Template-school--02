@@ -1868,16 +1868,33 @@ export default function AlunosPage({ action: initialAction }: { action?: string 
               endMonth={new Date()}
             />
 
-            <CustomSelect
-              label="Gênero"
-              value={inscForm.gender}
-              onChange={(val) => setInscForm({ ...inscForm, gender: val })}
-              options={[
-                { label: "Selecionar", value: "" },
-                { label: "Feminino", value: "Feminino" },
-                { label: "Masculino", value: "Masculino" },
-              ]}
-            />
+            <div className="space-y-2">
+              <span className="block text-xs font-semibold text-gray-700">Gênero</span>
+              <div className="flex gap-4">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="insc-gender"
+                    value="Masculino"
+                    checked={inscForm.gender === "Masculino"}
+                    onChange={(e) => setInscForm({ ...inscForm, gender: e.target.value })}
+                    className="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300"
+                  />
+                  <span className="text-sm text-gray-700">Masculino</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="insc-gender"
+                    value="Feminino"
+                    checked={inscForm.gender === "Feminino"}
+                    onChange={(e) => setInscForm({ ...inscForm, gender: e.target.value })}
+                    className="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300"
+                  />
+                  <span className="text-sm text-gray-700">Feminino</span>
+                </label>
+              </div>
+            </div>
 
             <CustomSelect
               label="Curso de interesse *"
